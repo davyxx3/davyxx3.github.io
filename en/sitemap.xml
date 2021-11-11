@@ -2,50 +2,50 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
   xmlns:xhtml="http://www.w3.org/1999/xhtml">
   <url>
-    <loc>http://example.org/</loc>
+    <loc>https://davyxx3.github.io/</loc>
     <lastmod>2021-11-11T18:03:15+08:00</lastmod>
     <xhtml:link
                 rel="alternate"
                 hreflang="de"
-                href="http://example.org/de/"
+                href="https://davyxx3.github.io/de/"
                 />
     <xhtml:link
                 rel="alternate"
                 hreflang="en"
-                href="http://example.org/"
+                href="https://davyxx3.github.io/"
                 />
   </url><url>
-    <loc>http://example.org/post/myfirstarticle/</loc>
+    <loc>https://davyxx3.github.io/post/myfirstarticle/</loc>
     <lastmod>2021-11-11T18:03:15+08:00</lastmod>
   </url><url>
-    <loc>http://example.org/post/</loc>
+    <loc>https://davyxx3.github.io/post/</loc>
     <lastmod>2021-11-11T18:03:15+08:00</lastmod>
   </url><url>
-    <loc>http://example.org/about/</loc>
+    <loc>https://davyxx3.github.io/about/</loc>
     <lastmod>2021-11-11T18:02:13+08:00</lastmod>
   </url><url>
-    <loc>http://example.org/categories/</loc>
+    <loc>https://davyxx3.github.io/categories/</loc>
     <xhtml:link
                 rel="alternate"
                 hreflang="de"
-                href="http://example.org/de/categories/"
+                href="https://davyxx3.github.io/de/categories/"
                 />
     <xhtml:link
                 rel="alternate"
                 hreflang="en"
-                href="http://example.org/categories/"
+                href="https://davyxx3.github.io/categories/"
                 />
   </url><url>
-    <loc>http://example.org/tags/</loc>
+    <loc>https://davyxx3.github.io/tags/</loc>
     <xhtml:link
                 rel="alternate"
                 hreflang="de"
-                href="http://example.org/de/tags/"
+                href="https://davyxx3.github.io/de/tags/"
                 />
     <xhtml:link
                 rel="alternate"
                 hreflang="en"
-                href="http://example.org/tags/"
+                href="https://davyxx3.github.io/tags/"
                 />
   </url>
 </urlset>

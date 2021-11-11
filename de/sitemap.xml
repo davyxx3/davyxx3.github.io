@@ -2,40 +2,40 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
   xmlns:xhtml="http://www.w3.org/1999/xhtml">
   <url>
-    <loc>http://example.org/de/categories/</loc>
+    <loc>https://davyxx3.github.io/de/categories/</loc>
     <xhtml:link
                 rel="alternate"
                 hreflang="en"
-                href="http://example.org/categories/"
+                href="https://davyxx3.github.io/categories/"
                 />
     <xhtml:link
                 rel="alternate"
                 hreflang="de"
-                href="http://example.org/de/categories/"
+                href="https://davyxx3.github.io/de/categories/"
                 />
   </url><url>
-    <loc>http://example.org/de/</loc>
+    <loc>https://davyxx3.github.io/de/</loc>
     <xhtml:link
                 rel="alternate"
                 hreflang="en"
-                href="http://example.org/"
+                href="https://davyxx3.github.io/"
                 />
     <xhtml:link
                 rel="alternate"
                 hreflang="de"
-                href="http://example.org/de/"
+                href="https://davyxx3.github.io/de/"
                 />
   </url><url>
-    <loc>http://example.org/de/tags/</loc>
+    <loc>https://davyxx3.github.io/de/tags/</loc>
     <xhtml:link
                 rel="alternate"
                 hreflang="en"
-                href="http://example.org/tags/"
+                href="https://davyxx3.github.io/tags/"
                 />
     <xhtml:link
                 rel="alternate"
                 hreflang="de"
-                href="http://example.org/de/tags/"
+                href="https://davyxx3.github.io/de/tags/"
                 />
   </url>
 </urlset>
