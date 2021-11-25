@@ -1,20 +1,25 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
-    <title>Posts on My New Hugo Site</title>
+    <title>Posts on CyderX</title>
     <link>https://davyxx3.github.io/post/</link>
-    <description>Recent content in Posts on My New Hugo Site</description>
+    <description>Recent content in Posts on CyderX</description>
     <generator>Hugo -- gohugo.io</generator>
-    <language>en</language>
-    <copyright>&amp;copy; some license</copyright>
-    <lastBuildDate>Thu, 11 Nov 2021 18:03:15 +0800</lastBuildDate><atom:link href="https://davyxx3.github.io/post/index.xml" rel="self" type="application/rss+xml" />
+    <language>zh-cn</language>
+    <lastBuildDate>Fri, 26 Nov 2021 01:00:00 +0800</lastBuildDate><atom:link href="https://davyxx3.github.io/post/index.xml" rel="self" type="application/rss+xml" />
     <item>
-      <title>MyFirstArticle</title>
-      <link>https://davyxx3.github.io/post/myfirstarticle/</link>
-      <pubDate>Thu, 11 Nov 2021 18:03:15 +0800</pubDate>
+      <title>ConcurrentLinkedQueue源码分析</title>
+      <link>https://davyxx3.github.io/p/concurrentlinkedqueue%E6%BA%90%E7%A0%81%E5%88%86%E6%9E%90/</link>
+      <pubDate>Fri, 26 Nov 2021 01:00:00 +0800</pubDate>
       
-      <guid>https://davyxx3.github.io/post/myfirstarticle/</guid>
-      <description>Hello Hugo This is my first article!</description>
+      <guid>https://davyxx3.github.io/p/concurrentlinkedqueue%E6%BA%90%E7%A0%81%E5%88%86%E6%9E%90/</guid>
+      <description>简介 ConcurrentLinkedQueue是高并发环境中性能最好的队列
+要想队列保证线程安全，有两种实现方式
+ 阻塞算法：锁 非阻塞算法：循环CAS  在队列中，BlockingQueue是阻塞算法的典型实现（使用锁来保证线程安全），而ConcurrentLinkedQueue则是非阻塞算法的典型实现（使用CAS保证线程安全）
+原理 ConcurrentLinkedQueue的基本结构
+Node节点
+static final class Node&amp;lt;E&amp;gt; { volatile E item; volatile Node&amp;lt;E&amp;gt; next; // 利用CAS操作向后添加一个节点  void appendRelaxed(Node&amp;lt;E&amp;gt; next) { NEXT.set(this, next); } // 利用CAS操作设置值（cmp是期望值，val是要设置的值）  boolean casItem(E cmp, E val) { return ITEM.compareAndSet(this, cmp, val); } } head和tail
+transient volatile Node&amp;lt;E&amp;gt; head; private transient volatile Node&amp;lt;E&amp;gt; tail; // 初始时，head和tail都指向一个空节点 public ConcurrentLinkedQueue() { head = tail = new Node&amp;lt;E&amp;gt;(); } CoucurrentLinkedQueue规定了如下几个不变性：</description>
     </item>
     
   </channel>
