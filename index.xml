@@ -6,7 +6,242 @@
         <description>Recent content on CyderX</description>
         <generator>Hugo -- gohugo.io</generator>
         <language>zh-cn</language>
-        <lastBuildDate>Fri, 26 Nov 2021 01:00:00 +0800</lastBuildDate><atom:link href="https://davyxx3.github.io/index.xml" rel="self" type="application/rss+xml" /><item>
+        <lastBuildDate>Fri, 26 Nov 2021 10:00:00 +0800</lastBuildDate><atom:link href="https://davyxx3.github.io/index.xml" rel="self" type="application/rss+xml" /><item>
+        <title>谈谈缓存穿透、击穿和雪崩</title>
+        <link>https://davyxx3.github.io/p/%E8%B0%88%E8%B0%88%E7%BC%93%E5%AD%98%E7%A9%BF%E9%80%8F%E5%87%BB%E7%A9%BF%E5%92%8C%E9%9B%AA%E5%B4%A9/</link>
+        <pubDate>Fri, 26 Nov 2021 10:00:00 +0800</pubDate>
+        
+        <guid>https://davyxx3.github.io/p/%E8%B0%88%E8%B0%88%E7%BC%93%E5%AD%98%E7%A9%BF%E9%80%8F%E5%87%BB%E7%A9%BF%E5%92%8C%E9%9B%AA%E5%B4%A9/</guid>
+        <description>&lt;img src="https://davyxx3.github.io/p/%E8%B0%88%E8%B0%88%E7%BC%93%E5%AD%98%E7%A9%BF%E9%80%8F%E5%87%BB%E7%A9%BF%E5%92%8C%E9%9B%AA%E5%B4%A9/bg.jpeg" alt="Featured image of post 谈谈缓存穿透、击穿和雪崩" /&gt;&lt;h2 id=&#34;缓存穿透及优化&#34;&gt;缓存穿透及优化&lt;/h2&gt;
+&lt;p&gt;缓存穿透：查询一个根本不存在的数据，缓存层和存储层都不会命中&lt;/p&gt;
+&lt;p&gt;缓存穿透导致不存在的数据每次请求都要到存储层查询，缓存的保护失去了意义，会使后端存储负载加大&lt;/p&gt;
+&lt;p&gt;&lt;figure 
+	&gt;
+	&lt;a href=&#34;https://cdn.jsdelivr.net/gh/davyxx3/pics/blog_imgblog_img1595576768482200.png&#34; &gt;
+		&lt;img src=&#34;https://cdn.jsdelivr.net/gh/davyxx3/pics/blog_imgblog_img1595576768482200.png&#34;
+			
+			
+			
+			loading=&#34;lazy&#34;
+			alt=&#34;缓存穿透图示&#34;&gt;
+	&lt;/a&gt;
+	
+	&lt;figcaption&gt;缓存穿透图示&lt;/figcaption&gt;
+	
+&lt;/figure&gt;&lt;/p&gt;
+&lt;p&gt;解决办法&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;缓存空对象：存储层不命中后，将空对象保存至缓存层中，之后的访问都会从缓存层获取，这样就保护了后端数据&lt;/p&gt;
+&lt;p&gt;缺点：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;缓存空对象，意味着缓存中存了更多的键，会占用空间，可以通过设置过期时间解决&lt;/li&gt;
+&lt;li&gt;缓存层和存储层会有一段时间窗口的不一致（比如缓存层中存了空对象并设置过期时间为5分钟，但此时存储层刚好添加了该键对应的数据，就造成了数据不一致），可以使用消息系统或者其他方式解决&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;布隆过滤器拦截：缓存穿透是查询一个根本不存在的数据，因此可以在缓存层前加一个布隆过滤器，将不存在的数据拦截。&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;关于布隆过滤器，可以查看我写的另一篇文章：&lt;a class=&#34;link&#34; href=&#34;https://davyxx3.github.io/p/%e5%b8%83%e9%9a%86%e8%bf%87%e6%bb%a4%e5%99%a8%e7%9a%84%e7%ae%80%e5%8d%95%e6%80%bb%e7%bb%93/&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;布隆过滤器的简单总结&lt;/a&gt;&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;&lt;figure 
+	&gt;
+	&lt;a href=&#34;https://cdn.jsdelivr.net/gh/davyxx3/pics/blog_imgblog_imgC5EA64EDF8B5D89FE14B8A19730D6CA6.jpg&#34; &gt;
+		&lt;img src=&#34;https://cdn.jsdelivr.net/gh/davyxx3/pics/blog_imgblog_imgC5EA64EDF8B5D89FE14B8A19730D6CA6.jpg&#34;
+			
+			
+			
+			loading=&#34;lazy&#34;
+			&gt;
+	&lt;/a&gt;
+	
+&lt;/figure&gt;&lt;/p&gt;
+&lt;p&gt;两种解决方式的对比&lt;/p&gt;
+&lt;table&gt;
+&lt;thead&gt;
+&lt;tr&gt;
+&lt;th style=&#34;text-align:center&#34;&gt;解决方式&lt;/th&gt;
+&lt;th style=&#34;text-align:center&#34;&gt;适用场景&lt;/th&gt;
+&lt;th style=&#34;text-align:center&#34;&gt;代价&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;
+&lt;tr&gt;
+&lt;td style=&#34;text-align:center&#34;&gt;缓存空对象&lt;/td&gt;
+&lt;td style=&#34;text-align:center&#34;&gt;数据命中不高、数据变化频繁（实时性高）&lt;/td&gt;
+&lt;td style=&#34;text-align:center&#34;&gt;需要过多缓存空间、数据不一致&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td style=&#34;text-align:center&#34;&gt;布隆过滤器&lt;/td&gt;
+&lt;td style=&#34;text-align:center&#34;&gt;数据命中不高，数据相对固定（实时性低）&lt;/td&gt;
+&lt;td style=&#34;text-align:center&#34;&gt;代码维护复杂&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;p&gt;&lt;strong&gt;PS：布隆过滤器不适用于数据变化频繁的场景（因为要不停地进行数据的插入和删除，而布隆过滤器对于删除操作极不友好），比较适用于数据相对固定的场景&lt;/strong&gt;&lt;/p&gt;
+&lt;h2 id=&#34;缓存击穿及其优化&#34;&gt;缓存击穿及其优化&lt;/h2&gt;
+&lt;p&gt;缓存层的某个key承受着非常高的并发，当这个key失效的瞬间，大量的请求会同时击穿缓存，打到DB，就像在纱窗上戳破了一个洞&lt;/p&gt;
+&lt;p&gt;&lt;figure 
+	&gt;
+	&lt;a href=&#34;https://cdn.jsdelivr.net/gh/davyxx3/pics/blog_imgu=1868703370,908516781&amp;amp;fm=253&amp;amp;fmt=auto&amp;amp;app=120&amp;amp;f=JPEG&#34; &gt;
+		&lt;img src=&#34;https://cdn.jsdelivr.net/gh/davyxx3/pics/blog_imgu=1868703370,908516781&amp;amp;fm=253&amp;amp;fmt=auto&amp;amp;app=120&amp;amp;f=JPEG&#34;
+			
+			
+			
+			loading=&#34;lazy&#34;
+			alt=&#34;缓存击穿图示&#34;&gt;
+	&lt;/a&gt;
+	
+	&lt;figcaption&gt;缓存击穿图示&lt;/figcaption&gt;
+	
+&lt;/figure&gt;&lt;/p&gt;
+&lt;p&gt;解决方法&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;设置热点数据不过期，这里的不过期是指物理上的不过期。我们可以设置一个逻辑过期时间，当超过逻辑过期时间时，异步地加载数据，更新缓存。这种方法适用于比较极端的场景（流量特别大），需要承受数据不一致的代价（缓存重构需要时间）&lt;/li&gt;
+&lt;li&gt;给访问DB操作加上互斥锁，只有一个线程能拿到锁，请求DB并把数据刷到缓存中，其他线程再从缓存拿这个数据&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;两种解决方法的对比&lt;/p&gt;
+&lt;table&gt;
+&lt;thead&gt;
+&lt;tr&gt;
+&lt;th style=&#34;text-align:center&#34;&gt;解决方法&lt;/th&gt;
+&lt;th style=&#34;text-align:center&#34;&gt;优点&lt;/th&gt;
+&lt;th style=&#34;text-align:center&#34;&gt;缺点&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;
+&lt;tr&gt;
+&lt;td style=&#34;text-align:center&#34;&gt;简单分布式锁&lt;/td&gt;
+&lt;td style=&#34;text-align:center&#34;&gt;思路简单、保证一致性&lt;/td&gt;
+&lt;td style=&#34;text-align:center&#34;&gt;代码复杂度大、存在死锁和线程池阻塞的风险&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td style=&#34;text-align:center&#34;&gt;热点数据永不过期&lt;/td&gt;
+&lt;td style=&#34;text-align:center&#34;&gt;杜绝缓存击穿问题&lt;/td&gt;
+&lt;td style=&#34;text-align:center&#34;&gt;不保证一致性、代码维护成本和内存成本增加&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;h2 id=&#34;缓存雪崩及优化&#34;&gt;缓存雪崩及优化&lt;/h2&gt;
+&lt;p&gt;缓存层因为某些原因无法提供服务（比如缓存服务器重启，或者大量key在同一时间失效等情况），所有请求都打到存储层，则存储层的调用量会暴增，造成存储层也级联宕机的情况&lt;/p&gt;
+&lt;p&gt;&lt;figure 
+	&gt;
+	&lt;a href=&#34;https://cdn.jsdelivr.net/gh/davyxx3/pics/blog_imgblog_img965d07c7bd3192445850c1ed1bc2c9f0.png&#34; &gt;
+		&lt;img src=&#34;https://cdn.jsdelivr.net/gh/davyxx3/pics/blog_imgblog_img965d07c7bd3192445850c1ed1bc2c9f0.png&#34;
+			
+			
+			
+			loading=&#34;lazy&#34;
+			&gt;
+	&lt;/a&gt;
+	
+&lt;/figure&gt;&lt;/p&gt;
+&lt;p&gt;针对两种情况，有不同的解决方法&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;缓存层宕机的解决方法：
+&lt;ol&gt;
+&lt;li&gt;保证缓存层服务高可用，例如使用Redis Sentinel或者Redis Cluster&lt;/li&gt;
+&lt;li&gt;使用隔离组件为后端限流并降级：限制存储层的访问流量（服务限流），并主动停掉一些不太重要的业务，减轻存储层的压力（服务降级）&lt;/li&gt;
+&lt;/ol&gt;
+&lt;/li&gt;
+&lt;li&gt;大量key在同一时间失效的解决方法：
+&lt;ol&gt;
+&lt;li&gt;在原有的失效时间基础上增加一个随机值，防止大批key在同一时刻失效&lt;/li&gt;
+&lt;li&gt;若缓存层是分布式存储，可以将热点数据均匀分布在不同的库中&lt;/li&gt;
+&lt;li&gt;设置热点数据永不过期（如上文所说，需要承受数据不一致的代价）&lt;/li&gt;
+&lt;/ol&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+</description>
+        </item>
+        <item>
+        <title>布隆过滤器的简单总结</title>
+        <link>https://davyxx3.github.io/p/%E5%B8%83%E9%9A%86%E8%BF%87%E6%BB%A4%E5%99%A8%E7%9A%84%E7%AE%80%E5%8D%95%E6%80%BB%E7%BB%93/</link>
+        <pubDate>Fri, 26 Nov 2021 08:00:00 +0800</pubDate>
+        
+        <guid>https://davyxx3.github.io/p/%E5%B8%83%E9%9A%86%E8%BF%87%E6%BB%A4%E5%99%A8%E7%9A%84%E7%AE%80%E5%8D%95%E6%80%BB%E7%BB%93/</guid>
+        <description>&lt;img src="https://davyxx3.github.io/p/%E5%B8%83%E9%9A%86%E8%BF%87%E6%BB%A4%E5%99%A8%E7%9A%84%E7%AE%80%E5%8D%95%E6%80%BB%E7%BB%93/bg.jpeg" alt="Featured image of post 布隆过滤器的简单总结" /&gt;&lt;p&gt;布隆过滤器（Bloom Filter）是一个很长的二进制向量和一系列随机映射函数&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;用途：判断一个元素是否在一个集合中&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;严谨来说，应该是：判断某样东西一定不存在或可能存在&lt;/p&gt;
+&lt;h2 id=&#34;数据存入&#34;&gt;数据存入&lt;/h2&gt;
+&lt;ol&gt;
+&lt;li&gt;经过K个哈希函数计算，返回K个计算出的hash值&lt;/li&gt;
+&lt;li&gt;这k个hash值映射到对应的k个数组下标&lt;/li&gt;
+&lt;li&gt;将二进制向量中这k个下标的对应数据改为1&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;&lt;figure 
+	&gt;
+	&lt;a href=&#34;https://cdn.jsdelivr.net/gh/davyxx3/pics/blog_img/74275c10493948b7b27babe87b226efc-1.jpg&#34; &gt;
+		&lt;img src=&#34;https://cdn.jsdelivr.net/gh/davyxx3/pics/blog_img/74275c10493948b7b27babe87b226efc-1.jpg&#34;
+			
+			
+			
+			loading=&#34;lazy&#34;
+			alt=&#34;数据存入的过程&#34;&gt;
+	&lt;/a&gt;
+	
+	&lt;figcaption&gt;数据存入的过程&lt;/figcaption&gt;
+	
+&lt;/figure&gt;&lt;/p&gt;
+&lt;h2 id=&#34;数据查询&#34;&gt;数据查询&lt;/h2&gt;
+&lt;ol&gt;
+&lt;li&gt;经过K个哈希函数计算该数据，算出k个hash值&lt;/li&gt;
+&lt;li&gt;以hash值为下标在二进制向量中找到对应的数据&lt;/li&gt;
+&lt;li&gt;若有一处的数据为0，则该数据不存在，否则说明数据&lt;strong&gt;可能&lt;/strong&gt;存在（并不是一定存在，有误判的可能）&lt;/li&gt;
+&lt;/ol&gt;
+&lt;h2 id=&#34;参数选择&#34;&gt;参数选择&lt;/h2&gt;
+&lt;p&gt;二进制向量的长度会影响误报率，长度越长，误报率越低&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;若长度太小，所有bit都置成1的话，那么查询任何值都会返回“可能存在”，无法起到过滤的目的&lt;/li&gt;
+&lt;li&gt;若长度太大，则可能会造成空间浪费&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;哈希函数的个数也会影响误报率，函数个数越多，误报率越低&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;若函数个数太多，则二进制向量置1的速度会变得很快，这样布隆过滤器的效率会变低&lt;/li&gt;
+&lt;li&gt;若函数个数太少，则误报率变高&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;参数的选取公式：&lt;/p&gt;
+&lt;p&gt;&lt;figure 
+	&gt;
+	&lt;a href=&#34;https://cdn.jsdelivr.net/gh/davyxx3/pics/blog_img/v2-1ed5b79aa7ac2e9cd66c83690fdbfcf0_720w.jpg&#34; &gt;
+		&lt;img src=&#34;https://cdn.jsdelivr.net/gh/davyxx3/pics/blog_img/v2-1ed5b79aa7ac2e9cd66c83690fdbfcf0_720w.jpg&#34;
+			
+			
+			
+			loading=&#34;lazy&#34;
+			alt=&#34;m和k的计算公式&#34;&gt;
+	&lt;/a&gt;
+	
+	&lt;figcaption&gt;m和k的计算公式&lt;/figcaption&gt;
+	
+&lt;/figure&gt;&lt;/p&gt;
+&lt;p&gt;k为哈希函数个数，m为布隆过滤器长度，n为插入元素的个数，p为误报率&lt;/p&gt;
+&lt;h2 id=&#34;总结&#34;&gt;总结&lt;/h2&gt;
+&lt;p&gt;优点：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;占用空间小（存储的是二进制数据）&lt;/li&gt;
+&lt;li&gt;查询速度快，时间复杂度为O(k)&lt;/li&gt;
+&lt;li&gt;保密性很好，不存储任何原始数据，只有二进制数据&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;缺点：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;存在误判的可能（不同的数据可能映射到二进制向量中的相同位置）&lt;/li&gt;
+&lt;li&gt;删除困难，也是因为上述的理由&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;与HashMap的比较：&lt;/p&gt;
+&lt;p&gt;HashMap速度也很快，但占用空间太大，因为有负载因子的存在，为了避免哈希冲突，空间是没办法用满的，会造成大量的空间浪费。使用布隆过滤器可以在不牺牲查找速度的同时，降低空间消耗，代价就是判断并不完全准确&lt;/p&gt;
+&lt;p&gt;应用场景：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;URL黑名单过滤&lt;/li&gt;
+&lt;li&gt;解决缓存穿透的问题&lt;/li&gt;
+&lt;li&gt;&amp;hellip;&lt;/li&gt;
+&lt;/ul&gt;
+</description>
+        </item>
+        <item>
         <title>ConcurrentLinkedQueue源码分析</title>
         <link>https://davyxx3.github.io/p/concurrentlinkedqueue%E6%BA%90%E7%A0%81%E5%88%86%E6%9E%90/</link>
         <pubDate>Fri, 26 Nov 2021 01:00:00 +0800</pubDate>

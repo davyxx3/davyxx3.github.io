@@ -1,0 +1,558 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+    <head><meta charset='utf-8'>
+<meta name='viewport' content='width=device-width, initial-scale=1'><meta name='description' content='几个缓存的常见问题和优化方法'><title>谈谈缓存穿透、击穿和雪崩</title>
+
+<link rel='canonical' href='https://davyxx3.github.io/p/%E8%B0%88%E8%B0%88%E7%BC%93%E5%AD%98%E7%A9%BF%E9%80%8F%E5%87%BB%E7%A9%BF%E5%92%8C%E9%9B%AA%E5%B4%A9/'>
+
+<link rel="stylesheet" href="/scss/style.min.css"><meta property='og:title' content='谈谈缓存穿透、击穿和雪崩'>
+<meta property='og:description' content='几个缓存的常见问题和优化方法'>
+<meta property='og:url' content='https://davyxx3.github.io/p/%E8%B0%88%E8%B0%88%E7%BC%93%E5%AD%98%E7%A9%BF%E9%80%8F%E5%87%BB%E7%A9%BF%E5%92%8C%E9%9B%AA%E5%B4%A9/'>
+<meta property='og:site_name' content='CyderX'>
+<meta property='og:type' content='article'><meta property='article:section' content='Post' /><meta property='article:tag' content='缓存' /><meta property='article:tag' content='数据库' /><meta property='article:published_time' content='2021-11-26T10:00:00&#43;08:00'/><meta property='article:modified_time' content='2021-11-26T10:00:00&#43;08:00'/><meta property='og:image' content='https://davyxx3.github.io/p/%E8%B0%88%E8%B0%88%E7%BC%93%E5%AD%98%E7%A9%BF%E9%80%8F%E5%87%BB%E7%A9%BF%E5%92%8C%E9%9B%AA%E5%B4%A9/bg.jpeg' />
+<meta name="twitter:site" content="@davyxx3">
+    <meta name="twitter:creator" content="@davyxx3"><meta name="twitter:title" content="谈谈缓存穿透、击穿和雪崩">
+<meta name="twitter:description" content="几个缓存的常见问题和优化方法"><meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:image" content='https://davyxx3.github.io/p/%E8%B0%88%E8%B0%88%E7%BC%93%E5%AD%98%E7%A9%BF%E9%80%8F%E5%87%BB%E7%A9%BF%E5%92%8C%E9%9B%AA%E5%B4%A9/bg.jpeg' />
+    </head>
+    <body class="
+    article-page has-toc
+">
+    <script>
+        (function() {
+            const colorSchemeKey = 'StackColorScheme';
+            if(!localStorage.getItem(colorSchemeKey)){
+                localStorage.setItem(colorSchemeKey, "auto");
+            }
+        })();
+    </script><script>
+    (function() {
+        const colorSchemeKey = 'StackColorScheme';
+        const colorSchemeItem = localStorage.getItem(colorSchemeKey);
+        const supportDarkMode = window.matchMedia('(prefers-color-scheme: dark)').matches === true;
+
+        if (colorSchemeItem == 'dark' || colorSchemeItem === 'auto' && supportDarkMode) {
+            
+
+            document.documentElement.dataset.scheme = 'dark';
+        } else {
+            document.documentElement.dataset.scheme = 'light';
+        }
+    })();
+</script>
+<div class="container main-container flex 
+    
+        extended
+    
+">
+    
+        <div id="article-toolbar">
+            <a href="/" class="back-home">
+                <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-chevron-left" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <polyline points="15 6 9 12 15 18" />
+</svg>
+
+
+
+                <span>返回</span>
+            </a>
+        </div>
+    
+<main class="main full-width">
+    <article class="has-image main-article">
+    <header class="article-header">
+        <div class="article-image">
+            <a href="/p/%E8%B0%88%E8%B0%88%E7%BC%93%E5%AD%98%E7%A9%BF%E9%80%8F%E5%87%BB%E7%A9%BF%E5%92%8C%E9%9B%AA%E5%B4%A9/">
+                <img src="/p/%E8%B0%88%E8%B0%88%E7%BC%93%E5%AD%98%E7%A9%BF%E9%80%8F%E5%87%BB%E7%A9%BF%E5%92%8C%E9%9B%AA%E5%B4%A9/bg_hu4ffaf0220a7db3667523ce786184afe1_220850_800x0_resize_q75_box.jpeg"
+                        srcset="/p/%E8%B0%88%E8%B0%88%E7%BC%93%E5%AD%98%E7%A9%BF%E9%80%8F%E5%87%BB%E7%A9%BF%E5%92%8C%E9%9B%AA%E5%B4%A9/bg_hu4ffaf0220a7db3667523ce786184afe1_220850_800x0_resize_q75_box.jpeg 800w, /p/%E8%B0%88%E8%B0%88%E7%BC%93%E5%AD%98%E7%A9%BF%E9%80%8F%E5%87%BB%E7%A9%BF%E5%92%8C%E9%9B%AA%E5%B4%A9/bg_hu4ffaf0220a7db3667523ce786184afe1_220850_1600x0_resize_q75_box.jpeg 1600w"
+                        width="800" 
+                        height="533" 
+                        loading="lazy"
+                        alt="Featured image of post 谈谈缓存穿透、击穿和雪崩" />
+                
+            </a>
+        </div>
+    
+
+    <div class="article-details">
+    
+    <header class="article-category">
+        
+            <a href="/categories/%E5%BC%80%E5%8F%91/" >
+                开发
+            </a>
+        
+    </header>
+    
+
+    <h2 class="article-title">
+        <a href="/p/%E8%B0%88%E8%B0%88%E7%BC%93%E5%AD%98%E7%A9%BF%E9%80%8F%E5%87%BB%E7%A9%BF%E5%92%8C%E9%9B%AA%E5%B4%A9/">谈谈缓存穿透、击穿和雪崩</a>
+    </h2>
+
+    
+    <h3 class="article-subtitle">
+        几个缓存的常见问题和优化方法
+    </h3>
+    
+
+    
+    <footer class="article-time">
+        
+            <div>
+                <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-calendar-time" width="56" height="56" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <path d="M11.795 21h-6.795a2 2 0 0 1 -2 -2v-12a2 2 0 0 1 2 -2h12a2 2 0 0 1 2 2v4" />
+  <circle cx="18" cy="18" r="4" />
+  <path d="M15 3v4" />
+  <path d="M7 3v4" />
+  <path d="M3 11h16" />
+  <path d="M18 16.496v1.504l1 1" />
+</svg>
+                <time class="article-time--published">Nov 26, 2021</time>
+            </div>
+        
+
+        
+            <div>
+                <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-clock" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="12" cy="12" r="9" />
+  <polyline points="12 7 12 12 15 15" />
+</svg>
+
+
+
+                <time class="article-time--reading">
+                    阅读时长: 1 分钟
+                </time>
+            </div>
+        
+    </footer>
+    
+</div>
+</header>
+
+    <section class="article-content">
+    <h2 id="缓存穿透及优化">缓存穿透及优化</h2>
+<p>缓存穿透：查询一个根本不存在的数据，缓存层和存储层都不会命中</p>
+<p>缓存穿透导致不存在的数据每次请求都要到存储层查询，缓存的保护失去了意义，会使后端存储负载加大</p>
+<p><figure 
+	>
+	<a href="https://cdn.jsdelivr.net/gh/davyxx3/pics/blog_imgblog_img1595576768482200.png" >
+		<img src="https://cdn.jsdelivr.net/gh/davyxx3/pics/blog_imgblog_img1595576768482200.png"
+			
+			
+			
+			loading="lazy"
+			alt="缓存穿透图示">
+	</a>
+	
+	<figcaption>缓存穿透图示</figcaption>
+	
+</figure></p>
+<p>解决办法</p>
+<ul>
+<li>
+<p>缓存空对象：存储层不命中后，将空对象保存至缓存层中，之后的访问都会从缓存层获取，这样就保护了后端数据</p>
+<p>缺点：</p>
+<ul>
+<li>缓存空对象，意味着缓存中存了更多的键，会占用空间，可以通过设置过期时间解决</li>
+<li>缓存层和存储层会有一段时间窗口的不一致（比如缓存层中存了空对象并设置过期时间为5分钟，但此时存储层刚好添加了该键对应的数据，就造成了数据不一致），可以使用消息系统或者其他方式解决</li>
+</ul>
+</li>
+<li>
+<p>布隆过滤器拦截：缓存穿透是查询一个根本不存在的数据，因此可以在缓存层前加一个布隆过滤器，将不存在的数据拦截。</p>
+<blockquote>
+<p>关于布隆过滤器，可以查看我写的另一篇文章：<a class="link" href="https://davyxx3.github.io/p/%e5%b8%83%e9%9a%86%e8%bf%87%e6%bb%a4%e5%99%a8%e7%9a%84%e7%ae%80%e5%8d%95%e6%80%bb%e7%bb%93/"  target="_blank" rel="noopener"
+    >布隆过滤器的简单总结</a></p>
+</blockquote>
+</li>
+</ul>
+<p><figure 
+	>
+	<a href="https://cdn.jsdelivr.net/gh/davyxx3/pics/blog_imgblog_imgC5EA64EDF8B5D89FE14B8A19730D6CA6.jpg" >
+		<img src="https://cdn.jsdelivr.net/gh/davyxx3/pics/blog_imgblog_imgC5EA64EDF8B5D89FE14B8A19730D6CA6.jpg"
+			
+			
+			
+			loading="lazy"
+			>
+	</a>
+	
+</figure></p>
+<p>两种解决方式的对比</p>
+<table>
+<thead>
+<tr>
+<th style="text-align:center">解决方式</th>
+<th style="text-align:center">适用场景</th>
+<th style="text-align:center">代价</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center">缓存空对象</td>
+<td style="text-align:center">数据命中不高、数据变化频繁（实时性高）</td>
+<td style="text-align:center">需要过多缓存空间、数据不一致</td>
+</tr>
+<tr>
+<td style="text-align:center">布隆过滤器</td>
+<td style="text-align:center">数据命中不高，数据相对固定（实时性低）</td>
+<td style="text-align:center">代码维护复杂</td>
+</tr>
+</tbody>
+</table>
+<p><strong>PS：布隆过滤器不适用于数据变化频繁的场景（因为要不停地进行数据的插入和删除，而布隆过滤器对于删除操作极不友好），比较适用于数据相对固定的场景</strong></p>
+<h2 id="缓存击穿及其优化">缓存击穿及其优化</h2>
+<p>缓存层的某个key承受着非常高的并发，当这个key失效的瞬间，大量的请求会同时击穿缓存，打到DB，就像在纱窗上戳破了一个洞</p>
+<p><figure 
+	>
+	<a href="https://cdn.jsdelivr.net/gh/davyxx3/pics/blog_imgu=1868703370,908516781&amp;fm=253&amp;fmt=auto&amp;app=120&amp;f=JPEG" >
+		<img src="https://cdn.jsdelivr.net/gh/davyxx3/pics/blog_imgu=1868703370,908516781&amp;fm=253&amp;fmt=auto&amp;app=120&amp;f=JPEG"
+			
+			
+			
+			loading="lazy"
+			alt="缓存击穿图示">
+	</a>
+	
+	<figcaption>缓存击穿图示</figcaption>
+	
+</figure></p>
+<p>解决方法</p>
+<ol>
+<li>设置热点数据不过期，这里的不过期是指物理上的不过期。我们可以设置一个逻辑过期时间，当超过逻辑过期时间时，异步地加载数据，更新缓存。这种方法适用于比较极端的场景（流量特别大），需要承受数据不一致的代价（缓存重构需要时间）</li>
+<li>给访问DB操作加上互斥锁，只有一个线程能拿到锁，请求DB并把数据刷到缓存中，其他线程再从缓存拿这个数据</li>
+</ol>
+<p>两种解决方法的对比</p>
+<table>
+<thead>
+<tr>
+<th style="text-align:center">解决方法</th>
+<th style="text-align:center">优点</th>
+<th style="text-align:center">缺点</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center">简单分布式锁</td>
+<td style="text-align:center">思路简单、保证一致性</td>
+<td style="text-align:center">代码复杂度大、存在死锁和线程池阻塞的风险</td>
+</tr>
+<tr>
+<td style="text-align:center">热点数据永不过期</td>
+<td style="text-align:center">杜绝缓存击穿问题</td>
+<td style="text-align:center">不保证一致性、代码维护成本和内存成本增加</td>
+</tr>
+</tbody>
+</table>
+<h2 id="缓存雪崩及优化">缓存雪崩及优化</h2>
+<p>缓存层因为某些原因无法提供服务（比如缓存服务器重启，或者大量key在同一时间失效等情况），所有请求都打到存储层，则存储层的调用量会暴增，造成存储层也级联宕机的情况</p>
+<p><figure 
+	>
+	<a href="https://cdn.jsdelivr.net/gh/davyxx3/pics/blog_imgblog_img965d07c7bd3192445850c1ed1bc2c9f0.png" >
+		<img src="https://cdn.jsdelivr.net/gh/davyxx3/pics/blog_imgblog_img965d07c7bd3192445850c1ed1bc2c9f0.png"
+			
+			
+			
+			loading="lazy"
+			>
+	</a>
+	
+</figure></p>
+<p>针对两种情况，有不同的解决方法</p>
+<ul>
+<li>缓存层宕机的解决方法：
+<ol>
+<li>保证缓存层服务高可用，例如使用Redis Sentinel或者Redis Cluster</li>
+<li>使用隔离组件为后端限流并降级：限制存储层的访问流量（服务限流），并主动停掉一些不太重要的业务，减轻存储层的压力（服务降级）</li>
+</ol>
+</li>
+<li>大量key在同一时间失效的解决方法：
+<ol>
+<li>在原有的失效时间基础上增加一个随机值，防止大批key在同一时刻失效</li>
+<li>若缓存层是分布式存储，可以将热点数据均匀分布在不同的库中</li>
+<li>设置热点数据永不过期（如上文所说，需要承受数据不一致的代价）</li>
+</ol>
+</li>
+</ul>
+
+</section>
+
+
+    <footer class="article-footer">
+    
+    <section class="article-tags">
+        
+            <a href="/tags/%E7%BC%93%E5%AD%98/">缓存</a>
+        
+            <a href="/tags/%E6%95%B0%E6%8D%AE%E5%BA%93/">数据库</a>
+        
+    </section>
+
+
+    
+    <section class="article-copyright">
+        <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-copyright" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="12" cy="12" r="9" />
+  <path d="M14.5 9a3.5 4 0 1 0 0 6" />
+</svg>
+
+
+
+        <span>Licensed under CC BY-NC-SA 4.0</span>
+    </section>
+    </footer>
+
+
+    
+</article>
+
+    <aside class="related-contents--wrapper">
+    
+    
+        <h2 class="section-title">相关文章</h2>
+        <div class="related-contents">
+            <div class="flex article-list--tile">
+                
+                    
+<article class="has-image">
+    <a href="/p/%E5%B8%83%E9%9A%86%E8%BF%87%E6%BB%A4%E5%99%A8%E7%9A%84%E7%AE%80%E5%8D%95%E6%80%BB%E7%BB%93/">
+        
+        
+            <div class="article-image">
+                <img src="/p/%E5%B8%83%E9%9A%86%E8%BF%87%E6%BB%A4%E5%99%A8%E7%9A%84%E7%AE%80%E5%8D%95%E6%80%BB%E7%BB%93/bg.857b060e24f78ec32a433630366e7202_hu1cee95830531cbd4ff92afca563f6bce_71782_250x150_fill_q75_box_smart1.jpeg" 
+                        width="250" 
+                        height="150" 
+                        loading="lazy" 
+                        data-key="" 
+                        data-hash="md5-hXsGDiT3jsMqQzYwNm5yAg==">
+                
+            </div>
+        
+
+        <div class="article-details">
+            <h2 class="article-title">布隆过滤器的简单总结</h2>
+        </div>
+    </a>
+</article>
+                
+                    
+<article class="has-image">
+    <a href="/p/concurrentlinkedqueue%E6%BA%90%E7%A0%81%E5%88%86%E6%9E%90/">
+        
+        
+            <div class="article-image">
+                <img src="/p/concurrentlinkedqueue%E6%BA%90%E7%A0%81%E5%88%86%E6%9E%90/CLQ.eb8d17285f1c0afecb7e8a87c7ed966b_hu3d03a01dcc18bc5be0e67db3d8d209a6_166172_250x150_fill_q75_box_smart1.jpg" 
+                        width="250" 
+                        height="150" 
+                        loading="lazy" 
+                        data-key="" 
+                        data-hash="md5-640XKF8cCv7LfoqHx&#43;2Waw==">
+                
+            </div>
+        
+
+        <div class="article-details">
+            <h2 class="article-title">ConcurrentLinkedQueue源码分析</h2>
+        </div>
+    </a>
+</article>
+                
+            </div>
+        </div>
+    
+</aside>
+
+     
+    
+        
+    <script src="https://utteranc.es/client.js" 
+        repo="davyxx3/blog_comment"
+        issue-term="pathname"
+        
+        crossorigin="anonymous"
+        async
+        >
+</script>
+
+<style>
+    .utterances {
+        max-width: unset;
+    }
+</style>
+
+<script>
+    function setUtterancesTheme(theme) {
+        let utterances = document.querySelector('.utterances iframe');
+        if (utterances) {
+            utterances.contentWindow.postMessage(
+                {
+                    type: 'set-theme',
+                    theme: `github-${theme}`
+                },
+                'https://utteranc.es'
+            );
+        }
+    }
+
+    addEventListener('message', event => {
+        if (event.origin !== 'https://utteranc.es') return;
+        setUtterancesTheme(document.documentElement.dataset.scheme)
+    });
+
+    window.addEventListener('onColorSchemeChange', (e) => {
+        setUtterancesTheme(e.detail)
+    })
+</script>
+
+
+    
+
+    <footer class="site-footer">
+    <section class="copyright">
+        &copy; 
+        
+            2020 - 
+        
+        2021 CyderX
+    </section>
+    
+    <section class="powerby">
+        Built with <a href="https://gohugo.io/" target="_blank" rel="noopener">Hugo</a> <br />
+        Theme <b><a href="https://github.com/CaiJimmy/hugo-theme-stack" target="_blank" rel="noopener" data-version="3.5.0">Stack</a></b> designed by <a href="https://jimmycai.com" target="_blank" rel="noopener">Jimmy</a>
+    </section>
+</footer>
+
+
+    
+<div class="pswp" tabindex="-1" role="dialog" aria-hidden="true">
+
+    
+    <div class="pswp__bg"></div>
+
+    
+    <div class="pswp__scroll-wrap">
+
+        
+        <div class="pswp__container">
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+        </div>
+
+        
+        <div class="pswp__ui pswp__ui--hidden">
+
+            <div class="pswp__top-bar">
+
+                
+
+                <div class="pswp__counter"></div>
+
+                <button class="pswp__button pswp__button--close" title="Close (Esc)"></button>
+
+                <button class="pswp__button pswp__button--share" title="Share"></button>
+
+                <button class="pswp__button pswp__button--fs" title="Toggle fullscreen"></button>
+
+                <button class="pswp__button pswp__button--zoom" title="Zoom in/out"></button>
+
+                
+                
+                <div class="pswp__preloader">
+                    <div class="pswp__preloader__icn">
+                        <div class="pswp__preloader__cut">
+                            <div class="pswp__preloader__donut"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="pswp__share-modal pswp__share-modal--hidden pswp__single-tap">
+                <div class="pswp__share-tooltip"></div>
+            </div>
+
+            <button class="pswp__button pswp__button--arrow--left" title="Previous (arrow left)">
+            </button>
+
+            <button class="pswp__button pswp__button--arrow--right" title="Next (arrow right)">
+            </button>
+
+            <div class="pswp__caption">
+                <div class="pswp__caption__center"></div>
+            </div>
+
+        </div>
+
+    </div>
+
+</div><script 
+                src="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe.min.js"integrity="sha256-ePwmChbbvXbsO02lbM3HoHbSHTHFAeChekF1xKJdleo="crossorigin="anonymous"
+                defer="true"
+                >
+            </script><script 
+                src="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe-ui-default.min.js"integrity="sha256-UKkzOn/w1mBxRmLLGrSeyB4e1xbrp4xylgAWb3M42pU="crossorigin="anonymous"
+                defer="true"
+                >
+            </script><link 
+                rel="stylesheet" 
+                href="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/default-skin/default-skin.css"integrity="sha256-c0uckgykQ9v5k&#43;IqViZOZKc47Jn7KQil4/MP3ySA3F8="crossorigin="anonymous"
+            ><link 
+                rel="stylesheet" 
+                href="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe.css"integrity="sha256-SBLU4vv6CA6lHsZ1XyTdhyjJxCjPif/TRkjnsyGAGnE="crossorigin="anonymous"
+            >
+
+            </main>
+    
+        <aside class="sidebar right-sidebar sticky">
+            <section class="widget archives">
+                <div class="widget-icon">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-hash" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <line x1="5" y1="9" x2="19" y2="9" />
+  <line x1="5" y1="15" x2="19" y2="15" />
+  <line x1="11" y1="4" x2="7" y2="20" />
+  <line x1="17" y1="4" x2="13" y2="20" />
+</svg>
+
+
+
+                </div>
+                <h2 class="widget-title section-title">目录</h2>
+                
+                <div class="widget--toc">
+                    <nav id="TableOfContents">
+  <ol>
+    <li><a href="#缓存穿透及优化">缓存穿透及优化</a></li>
+    <li><a href="#缓存击穿及其优化">缓存击穿及其优化</a></li>
+    <li><a href="#缓存雪崩及优化">缓存雪崩及优化</a></li>
+  </ol>
+</nav>
+                </div>
+            </section>
+        </aside>
+    
+
+        </div>
+        <script 
+                src="https://cdn.jsdelivr.net/npm/node-vibrant@3.1.5/dist/vibrant.min.js"integrity="sha256-5NovOZc4iwiAWTYIFiIM7DxKUXKWvpVEuMEPLzcm5/g="crossorigin="anonymous"
+                defer="false"
+                >
+            </script><script type="text/javascript" src="/ts/main.js" defer></script>
+<script>
+    (function () {
+        const customFont = document.createElement('link');
+        customFont.href = "https://fonts.googleapis.com/css2?family=Lato:wght@300;400;700&display=swap";
+
+        customFont.type = "text/css";
+        customFont.rel = "stylesheet";
+
+        document.head.appendChild(customFont);
+    }());
+</script>
+
+    </body>
+</html>
