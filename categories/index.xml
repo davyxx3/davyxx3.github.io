@@ -5,13 +5,14 @@
     <link>https://davyxx3.github.io/categories/</link>
     <description>Recent content in Categories on CyderX</description>
     <generator>Hugo -- gohugo.io</generator>
-    <language>zh-cn</language><atom:link href="https://davyxx3.github.io/categories/index.xml" rel="self" type="application/rss+xml" />
+    <language>zh-cn</language>
+    <lastBuildDate>Fri, 26 Nov 2021 01:00:00 +0800</lastBuildDate><atom:link href="https://davyxx3.github.io/categories/index.xml" rel="self" type="application/rss+xml" />
     <item>
-      <title>Test</title>
-      <link>https://davyxx3.github.io/categories/test/</link>
-      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      <title>开发</title>
+      <link>https://davyxx3.github.io/categories/%E5%BC%80%E5%8F%91/</link>
+      <pubDate>Fri, 26 Nov 2021 01:00:00 +0800</pubDate>
       
-      <guid>https://davyxx3.github.io/categories/test/</guid>
+      <guid>https://davyxx3.github.io/categories/%E5%BC%80%E5%8F%91/</guid>
       <description></description>
     </item>
     
