@@ -12,7 +12,24 @@
         <pubDate>Fri, 26 Nov 2021 10:00:00 +0800</pubDate>
         
         <guid>https://davyxx3.github.io/p/%E8%B0%88%E8%B0%88%E7%BC%93%E5%AD%98%E7%A9%BF%E9%80%8F%E5%87%BB%E7%A9%BF%E5%92%8C%E9%9B%AA%E5%B4%A9/</guid>
-        <description>&lt;img src="https://davyxx3.github.io/p/%E8%B0%88%E8%B0%88%E7%BC%93%E5%AD%98%E7%A9%BF%E9%80%8F%E5%87%BB%E7%A9%BF%E5%92%8C%E9%9B%AA%E5%B4%A9/bg.jpeg" alt="Featured image of post 谈谈缓存穿透、击穿和雪崩" /&gt;&lt;h2 id=&#34;缓存穿透及优化&#34;&gt;缓存穿透及优化&lt;/h2&gt;
+        <description>&lt;img src="https://davyxx3.github.io/p/%E8%B0%88%E8%B0%88%E7%BC%93%E5%AD%98%E7%A9%BF%E9%80%8F%E5%87%BB%E7%A9%BF%E5%92%8C%E9%9B%AA%E5%B4%A9/bg.jpeg" alt="Featured image of post 谈谈缓存穿透、击穿和雪崩" /&gt;&lt;h2 id=&#34;缓存概览&#34;&gt;缓存概览&lt;/h2&gt;
+&lt;p&gt;缓存的收益：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;加速读写，优化用户体验&lt;/li&gt;
+&lt;li&gt;降低后端负载&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;缓存的成本：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;数据可能无法保证一致性&lt;/li&gt;
+&lt;li&gt;架构复杂度增大&lt;/li&gt;
+&lt;li&gt;代码维护成本（运维成本）增大&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;适用场景：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;开销大的复杂计算&lt;/li&gt;
+&lt;li&gt;加速请求响应&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2 id=&#34;缓存穿透及优化&#34;&gt;缓存穿透及优化&lt;/h2&gt;
 &lt;p&gt;缓存穿透：查询一个根本不存在的数据，缓存层和存储层都不会命中&lt;/p&gt;
 &lt;p&gt;缓存穿透导致不存在的数据每次请求都要到存储层查询，缓存的保护失去了意义，会使后端存储负载加大&lt;/p&gt;
 &lt;p&gt;&lt;figure 
@@ -82,12 +99,12 @@
 &lt;/tbody&gt;
 &lt;/table&gt;
 &lt;p&gt;&lt;strong&gt;PS：布隆过滤器不适用于数据变化频繁的场景（因为要不停地进行数据的插入和删除，而布隆过滤器对于删除操作极不友好），比较适用于数据相对固定的场景&lt;/strong&gt;&lt;/p&gt;
-&lt;h2 id=&#34;缓存击穿及其优化&#34;&gt;缓存击穿及其优化&lt;/h2&gt;
+&lt;h2 id=&#34;缓存击穿及优化&#34;&gt;缓存击穿及优化&lt;/h2&gt;
 &lt;p&gt;缓存层的某个key承受着非常高的并发，当这个key失效的瞬间，大量的请求会同时击穿缓存，打到DB，就像在纱窗上戳破了一个洞&lt;/p&gt;
 &lt;p&gt;&lt;figure 
 	&gt;
-	&lt;a href=&#34;https://cdn.jsdelivr.net/gh/davyxx3/pics/blog_imgu=1868703370,908516781&amp;amp;fm=253&amp;amp;fmt=auto&amp;amp;app=120&amp;amp;f=JPEG&#34; &gt;
-		&lt;img src=&#34;https://cdn.jsdelivr.net/gh/davyxx3/pics/blog_imgu=1868703370,908516781&amp;amp;fm=253&amp;amp;fmt=auto&amp;amp;app=120&amp;amp;f=JPEG&#34;
+	&lt;a href=&#34;https://cdn.jsdelivr.net/gh/davyxx3/pics/blog_img/20211127222433.png&#34; &gt;
+		&lt;img src=&#34;https://cdn.jsdelivr.net/gh/davyxx3/pics/blog_img/20211127222433.png&#34;
 			
 			
 			
