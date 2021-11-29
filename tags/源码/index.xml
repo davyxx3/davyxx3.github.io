@@ -6,7 +6,43 @@
     <description>Recent content in 源码 on CyderX</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>zh-cn</language>
-    <lastBuildDate>Fri, 26 Nov 2021 01:00:00 +0800</lastBuildDate><atom:link href="https://davyxx3.github.io/tags/%E6%BA%90%E7%A0%81/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Tue, 30 Nov 2021 01:00:00 +0800</lastBuildDate><atom:link href="https://davyxx3.github.io/tags/%E6%BA%90%E7%A0%81/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>AbstractQueuedSynchronizer源码探究</title>
+      <link>https://davyxx3.github.io/p/abstractqueuedsynchronizer%E6%BA%90%E7%A0%81%E6%8E%A2%E7%A9%B6/</link>
+      <pubDate>Tue, 30 Nov 2021 01:00:00 +0800</pubDate>
+      
+      <guid>https://davyxx3.github.io/p/abstractqueuedsynchronizer%E6%BA%90%E7%A0%81%E6%8E%A2%E7%A9%B6/</guid>
+      <description>AQS概念 AbstractQueuedSynchronizer是JUC中非常重要的一个同步控制工具
+在JDK的并发包中，我们能看到很多很多的同步器类，比如ReentrantLock（可重入锁）、Semaphore（信号量）和CountDownLatch（倒计时闭锁）等等
+在这些类中，都使用了AbstractQueuedSynchronizer（AQS）来构建
+它们之间的继承关系如下图所示：
+AQS的继承关系
+可以看出，在基于AQS构建的同步器类中，都继承了AbstractQueuedSynchronizer的子类，而且名字都叫做Sync
+特别地，在ReentrantLock中Sync有两种实现类：NonfairSync和FairSync，分别实现了对不公平锁和公平锁的控制
+AQS的概念，总共有三点：
+ 状态信息：我们需要一个整数来保存当前的同步状态信息，这个信息在AbstractQueuedSynchronizer中由int属性state保存。它可以表示任意状态，比如ReentrantLock用它来表示线程已经重复获取锁的次数，Semaphore用它来表示剩余许可的数量 获取（aquire）：获取锁或许可，通常会阻塞，直至状态信息处于可被获取的状态 释放（release）：释放锁或许可，通常不会阻塞，释放操作会唤醒因获取而被阻塞的线程  AQS的内部结构 AQS在类内部维护了一个等待队列，这个队列叫作CLH队列。这个CLH队列实际上是一个双向链表，其示意图如下：AQS的等待队列（CLH队列）
+ CLH队列的优点：
+ 先进先出，可以保证公平性 非阻塞的队列，通过自旋锁和CAS保证节点插入和移除的原子性，实现无锁快速插入 采用了自旋锁思想，所以CLH队列也是一种基于链表的可扩展、高性能、公平的自旋锁   再来看一下AQS的UML图：
+AQS的UML图
+我们会发现：
+  链表的节点就是AQS内部的抽象类Node
+  AQS中的head就是指向队列的head节点，tail指向队列的尾节点
+  Node中有指向前节点的指针（prev）和指向后节点的指针（next），用waiter存放与此节点关联的线程，status则指明了线程的状态
+  可以看出，这个等待队列是存放着被阻塞的线程。在这个等待队列中的线程，会不断地尝试acquire，直到获取到锁或许可，改变状态信息为止
+实际上，AQS内部不只是有一个等待队列，它为各个Condition对象都维护了一个条件等待队列
+图中的ConditionObject就是一个Condition实现类，内部维护了firstWaiter和lastWaiter，指向队列的头和尾
+ConditionObject类的结构
+当线程因为调用Condition类中的await()挂起时，它们会进入条件等待队列中。当它们被signal()或signalAll()唤醒时，会将他们转移到等待队列中，去尝试acquire
+等待队列（同步队列）和条件等待队列
+因为队列不一样，节点也不一样，因此Node节点派生了3个子类
+ SharedNode：共享锁队列的节点 ExclusiveNode：独占锁队列的节点 ConditionNode：条件等待队列的节点  总而言之，AQS的结构如下图所示：
+AQS的总体结构
+源码分析 让我们从一个简单的非公平ReentrantLock出发，分析AQS在加锁时的表现
+lock() 首先调用ReentrantLock的lock()
+public void lock() { // 此处是调用了NonFairSync类的lock方法 	// NonFairSync就是AQS在ReentrantLock中的实现类  sync.</description>
+    </item>
+    
     <item>
       <title>ConcurrentLinkedQueue源码分析</title>
       <link>https://davyxx3.github.io/p/concurrentlinkedqueue%E6%BA%90%E7%A0%81%E5%88%86%E6%9E%90/</link>
