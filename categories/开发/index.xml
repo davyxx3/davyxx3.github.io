@@ -6,7 +6,32 @@
     <description>Recent content in 开发 on CyderX</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>zh-cn</language>
-    <lastBuildDate>Tue, 30 Nov 2021 01:00:00 +0800</lastBuildDate><atom:link href="https://davyxx3.github.io/categories/%E5%BC%80%E5%8F%91/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Mon, 06 Dec 2021 01:00:00 +0800</lastBuildDate><atom:link href="https://davyxx3.github.io/categories/%E5%BC%80%E5%8F%91/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Redis底层数据结构</title>
+      <link>https://davyxx3.github.io/p/redis%E5%BA%95%E5%B1%82%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/</link>
+      <pubDate>Mon, 06 Dec 2021 01:00:00 +0800</pubDate>
+      
+      <guid>https://davyxx3.github.io/p/redis%E5%BA%95%E5%B1%82%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/</guid>
+      <description>先挖个坑，还没更完，有时间再补充完整 :)
+底层数据结构 SDS 简单动态字符串（Simple Dynamic String）
+SDS的底层结构
+优点：
+ 常数复杂度获取字符串长度 防止缓冲区溢出 减少修改字符串的内存重分配次数（空间预分配，小于1MB时分配和len同样大小的未使用空间，大于1MB时分配1MB的未使用空间） 二进制安全（可以包含空字符） 兼容部分C字符串函数  链表 链表的底层结构
+特点：
+ 双端 无环 带表头指针和表尾指针 带链表长度计数器 多态  字典 字典的底层结构
+  dict（字典） -&amp;gt; dictht（dict hash table，也就是哈希表）-&amp;gt; dictEntry（哈希表节点）
+  一般字典只使用ht[0]哈希表，ht[1]只会在扩容时使用
+  rehashidx记录rehash目前的进度，如果没有在进行rehash，则值为-1
+  Redis使用MurmurHash2算法计算hash值
+在使用链表解决哈希冲突问题时，Redis把新加入的节点放在链表的表头位置，从而加快查找速度
+rehash   为ht[1]分配空间，大小取决于ht[0]的键值对数量
+  扩容：ht[1]的大小为第一个大于等于ht[0].used * 2的2^n
+  收缩：ht[1]的大小为第一个大于等于ht[0].used的2^n
+    重新计算索引值，移动元素
+  释放ht[0]，ht[1]变为ht[0]，ht[1]创建一个空表</description>
+    </item>
+    
     <item>
       <title>AbstractQueuedSynchronizer源码探究</title>
       <link>https://davyxx3.github.io/p/abstractqueuedsynchronizer%E6%BA%90%E7%A0%81%E6%8E%A2%E7%A9%B6/</link>

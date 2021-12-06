@@ -6,7 +6,399 @@
         <description>Recent content on CyderX</description>
         <generator>Hugo -- gohugo.io</generator>
         <language>zh-cn</language>
-        <lastBuildDate>Tue, 30 Nov 2021 01:00:00 +0800</lastBuildDate><atom:link href="https://davyxx3.github.io/index.xml" rel="self" type="application/rss+xml" /><item>
+        <lastBuildDate>Mon, 06 Dec 2021 01:00:00 +0800</lastBuildDate><atom:link href="https://davyxx3.github.io/index.xml" rel="self" type="application/rss+xml" /><item>
+        <title>Redis底层数据结构</title>
+        <link>https://davyxx3.github.io/p/redis%E5%BA%95%E5%B1%82%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/</link>
+        <pubDate>Mon, 06 Dec 2021 01:00:00 +0800</pubDate>
+        
+        <guid>https://davyxx3.github.io/p/redis%E5%BA%95%E5%B1%82%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/</guid>
+        <description>&lt;img src="https://davyxx3.github.io/p/redis%E5%BA%95%E5%B1%82%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/bg.jpg" alt="Featured image of post Redis底层数据结构" /&gt;&lt;p&gt;先挖个坑，还没更完，有时间再补充完整 :)&lt;/p&gt;
+&lt;h2 id=&#34;底层数据结构&#34;&gt;底层数据结构&lt;/h2&gt;
+&lt;h3 id=&#34;sds&#34;&gt;SDS&lt;/h3&gt;
+&lt;p&gt;简单动态字符串（Simple Dynamic String）&lt;/p&gt;
+&lt;p&gt;&lt;figure 
+	&gt;
+	&lt;a href=&#34;https://cdn.jsdelivr.net/gh/davyxx3/pics/blog_img/image-20211206180705865.png&#34; &gt;
+		&lt;img src=&#34;https://cdn.jsdelivr.net/gh/davyxx3/pics/blog_img/image-20211206180705865.png&#34;
+			
+			
+			
+			loading=&#34;lazy&#34;
+			alt=&#34;SDS的底层结构&#34;&gt;
+	&lt;/a&gt;
+	
+	&lt;figcaption&gt;SDS的底层结构&lt;/figcaption&gt;
+	
+&lt;/figure&gt;&lt;/p&gt;
+&lt;p&gt;优点：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;常数复杂度获取字符串长度&lt;/li&gt;
+&lt;li&gt;防止缓冲区溢出&lt;/li&gt;
+&lt;li&gt;减少修改字符串的内存重分配次数（空间预分配，小于1MB时分配和len同样大小的未使用空间，大于1MB时分配1MB的未使用空间）&lt;/li&gt;
+&lt;li&gt;二进制安全（可以包含空字符）&lt;/li&gt;
+&lt;li&gt;兼容部分C字符串函数&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id=&#34;链表&#34;&gt;链表&lt;/h3&gt;
+&lt;p&gt;&lt;figure 
+	&gt;
+	&lt;a href=&#34;https://cdn.jsdelivr.net/gh/davyxx3/pics/blog_img/image-20211206181332853.png&#34; &gt;
+		&lt;img src=&#34;https://cdn.jsdelivr.net/gh/davyxx3/pics/blog_img/image-20211206181332853.png&#34;
+			
+			
+			
+			loading=&#34;lazy&#34;
+			alt=&#34;链表的底层结构&#34;&gt;
+	&lt;/a&gt;
+	
+	&lt;figcaption&gt;链表的底层结构&lt;/figcaption&gt;
+	
+&lt;/figure&gt;&lt;/p&gt;
+&lt;p&gt;特点：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;双端&lt;/li&gt;
+&lt;li&gt;无环&lt;/li&gt;
+&lt;li&gt;带表头指针和表尾指针&lt;/li&gt;
+&lt;li&gt;带链表长度计数器&lt;/li&gt;
+&lt;li&gt;多态&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id=&#34;字典&#34;&gt;字典&lt;/h3&gt;
+&lt;p&gt;&lt;figure 
+	&gt;
+	&lt;a href=&#34;https://cdn.jsdelivr.net/gh/davyxx3/pics/blog_img/image-20211206181352391.png&#34; &gt;
+		&lt;img src=&#34;https://cdn.jsdelivr.net/gh/davyxx3/pics/blog_img/image-20211206181352391.png&#34;
+			
+			
+			
+			loading=&#34;lazy&#34;
+			alt=&#34;字典的底层结构&#34;&gt;
+	&lt;/a&gt;
+	
+	&lt;figcaption&gt;字典的底层结构&lt;/figcaption&gt;
+	
+&lt;/figure&gt;&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;dict（字典） -&amp;gt; dictht（dict hash table，也就是哈希表）-&amp;gt; dictEntry（哈希表节点）&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;一般字典只使用ht[0]哈希表，ht[1]只会在扩容时使用&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;rehashidx记录rehash目前的进度，如果没有在进行rehash，则值为-1&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;Redis使用MurmurHash2算法计算hash值&lt;/p&gt;
+&lt;p&gt;在使用链表解决哈希冲突问题时，Redis把新加入的节点放在链表的表头位置，从而加快查找速度&lt;/p&gt;
+&lt;h4 id=&#34;rehash&#34;&gt;rehash&lt;/h4&gt;
+&lt;ol&gt;
+&lt;li&gt;
+&lt;p&gt;为ht[1]分配空间，大小取决于ht[0]的键值对数量&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;扩容：ht[1]的大小为第一个大于等于ht[0].used * 2的2^n&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;收缩：ht[1]的大小为第一个大于等于ht[0].used的2^n&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;重新计算索引值，移动元素&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;释放ht[0]，ht[1]变为ht[0]，ht[1]创建一个空表&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;&lt;strong&gt;采用渐进式rehash，将计算工作均摊到对字典的每个增删改查操作上&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;扩容条件：&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;没在执行BGSAVE或BGWRITEAOF命令，且负载因子大于等于1&lt;/li&gt;
+&lt;li&gt;正在执行BGSAVE或BGWRITEAOF命令，且负载因子大于等于5&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;&lt;strong&gt;负载因子阈值不同的原因：Redis执行这些备份命令时，创建了一个子进程，使用写时复制技术来优化效率，此时应该避免向内存中写入新的数据（写入数据会在内存中创建新的页，造成性能开销），因此将负载因子阈值调高，防止触发扩容进行大量的写操作&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;收缩条件：负载因子小于0.1&lt;/p&gt;
+&lt;h3 id=&#34;跳表&#34;&gt;跳表&lt;/h3&gt;
+&lt;p&gt;平均O(logN)，最坏O(N)&lt;/p&gt;
+&lt;p&gt;&lt;figure 
+	&gt;
+	&lt;a href=&#34;https://cdn.jsdelivr.net/gh/davyxx3/pics/blog_img/image-20211205014408359.png&#34; &gt;
+		&lt;img src=&#34;https://cdn.jsdelivr.net/gh/davyxx3/pics/blog_img/image-20211205014408359.png&#34;
+			
+			
+			
+			loading=&#34;lazy&#34;
+			alt=&#34;跳表的底层结构&#34;&gt;
+	&lt;/a&gt;
+	
+	&lt;figcaption&gt;跳表的底层结构&lt;/figcaption&gt;
+	
+&lt;/figure&gt;&lt;/p&gt;
+&lt;p&gt;跳跃表节点的结构&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;level[]（层数组），其中包含的元素：
+&lt;ul&gt;
+&lt;li&gt;前进指针（下一个节点的指针）&lt;/li&gt;
+&lt;li&gt;跨度（下一个节点和此节点的距离）&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;backward（后退指针）：用于从尾部向前遍历&lt;/li&gt;
+&lt;li&gt;score（分值）：（用于排序）&lt;/li&gt;
+&lt;li&gt;obj：成员对象：指向字符串对象，它保存着一个SDS&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h4 id=&#34;层&#34;&gt;层&lt;/h4&gt;
+&lt;p&gt;创建新跳表节点时，根据&lt;strong&gt;幂次定律&lt;/strong&gt;（power law，越大的数出现概率越小），随机生成一个介于1-32之间的值作为level数组的大小，这个大小就是层的高度&lt;/p&gt;
+&lt;h3 id=&#34;整数集合&#34;&gt;整数集合&lt;/h3&gt;
+&lt;p&gt;整数集合（intset）是保存整数的集合抽象数据类型，各个项在数组中按值的大小从小到大排序&lt;/p&gt;
+&lt;p&gt;&lt;figure 
+	&gt;
+	&lt;a href=&#34;https://cdn.jsdelivr.net/gh/davyxx3/pics/blog_img/image-20211206180725694.png&#34; &gt;
+		&lt;img src=&#34;https://cdn.jsdelivr.net/gh/davyxx3/pics/blog_img/image-20211206180725694.png&#34;
+			
+			
+			
+			loading=&#34;lazy&#34;
+			alt=&#34;整数集合的底层结构&#34;&gt;
+	&lt;/a&gt;
+	
+	&lt;figcaption&gt;整数集合的底层结构&lt;/figcaption&gt;
+	
+&lt;/figure&gt;&lt;/p&gt;
+&lt;h4 id=&#34;升级&#34;&gt;升级&lt;/h4&gt;
+&lt;p&gt;如果添加的元素类型比现有的元素类型长，则需要先进行升级（upgrade）&lt;/p&gt;
+&lt;p&gt;步骤：&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;扩展数组空间大小&lt;/li&gt;
+&lt;li&gt;将现有元素全部转换为新类型的大小，并放至在正确的位上，保证有序性质&lt;/li&gt;
+&lt;li&gt;插入新元素&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;因为可能需要升级，所以添加的时间复杂度是O(N)&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;只要升级，就不会降级，没有降级机制&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;优点：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;提升灵活性&lt;/li&gt;
+&lt;li&gt;节约内存&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id=&#34;压缩列表&#34;&gt;压缩列表&lt;/h3&gt;
+&lt;p&gt;压缩列表（ziplist）是Redis为了节约内存开发的，由一系列特殊编码的连续内存块组成的顺序型数据结构&lt;/p&gt;
+&lt;p&gt;一个压缩列表可以包含任意多个节点（entry），每个节点可以保存一个字节数组或一个整数值&lt;/p&gt;
+&lt;p&gt;&lt;figure 
+	&gt;
+	&lt;a href=&#34;https://cdn.jsdelivr.net/gh/davyxx3/pics/blog_img/image-20211206181428515.png&#34; &gt;
+		&lt;img src=&#34;https://cdn.jsdelivr.net/gh/davyxx3/pics/blog_img/image-20211206181428515.png&#34;
+			
+			
+			
+			loading=&#34;lazy&#34;
+			alt=&#34;压缩列表的底层结构(1)&#34;&gt;
+	&lt;/a&gt;
+	
+	&lt;figcaption&gt;压缩列表的底层结构(1)&lt;/figcaption&gt;
+	
+&lt;/figure&gt;&lt;/p&gt;
+&lt;p&gt;&lt;figure 
+	&gt;
+	&lt;a href=&#34;https://gimg2.baidu.com/image_search/src=http%3A%2F%2Fimg-blog.csdnimg.cn%2F20210412174606967.png%3Fx-oss-process%3Dimage%2Fwatermark%2Ctype_ZmFuZ3poZW5naGVpdGk%2Cshadow_10%2Ctext_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L1RRMjAxNjA0MTI%3D%2Csize_16%2Ccolor_FFFFFF%2Ct_70&amp;amp;refer=http%3A%2F%2Fimg-blog.csdnimg.cn&amp;amp;app=2002&amp;amp;size=f9999,10000&amp;amp;q=a80&amp;amp;n=0&amp;amp;g=0n&amp;amp;fmt=jpeg?sec=1641233363&amp;amp;t=837f9c66915fca862c652a36f811fc67&#34; &gt;
+		&lt;img src=&#34;https://gimg2.baidu.com/image_search/src=http%3A%2F%2Fimg-blog.csdnimg.cn%2F20210412174606967.png%3Fx-oss-process%3Dimage%2Fwatermark%2Ctype_ZmFuZ3poZW5naGVpdGk%2Cshadow_10%2Ctext_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L1RRMjAxNjA0MTI%3D%2Csize_16%2Ccolor_FFFFFF%2Ct_70&amp;amp;refer=http%3A%2F%2Fimg-blog.csdnimg.cn&amp;amp;app=2002&amp;amp;size=f9999,10000&amp;amp;q=a80&amp;amp;n=0&amp;amp;g=0n&amp;amp;fmt=jpeg?sec=1641233363&amp;amp;t=837f9c66915fca862c652a36f811fc67&#34;
+			
+			
+			
+			loading=&#34;lazy&#34;
+			alt=&#34;压缩列表的底层结构(2)&#34;&gt;
+	&lt;/a&gt;
+	
+	&lt;figcaption&gt;压缩列表的底层结构(2)&lt;/figcaption&gt;
+	
+&lt;/figure&gt;&lt;/p&gt;
+&lt;h4 id=&#34;压缩列表节点&#34;&gt;压缩列表节点&lt;/h4&gt;
+&lt;p&gt;每个压缩列表可以保存一个字节数组或一个整数值&lt;/p&gt;
+&lt;p&gt;字节数组是以下三种长度的其中一种：&lt;/p&gt;
+&lt;p&gt;&lt;figure 
+	&gt;
+	&lt;a href=&#34;https://cdn.jsdelivr.net/gh/davyxx3/pics/blog_img/image-20211206181455718.png&#34; &gt;
+		&lt;img src=&#34;https://cdn.jsdelivr.net/gh/davyxx3/pics/blog_img/image-20211206181455718.png&#34;
+			
+			
+			
+			loading=&#34;lazy&#34;
+			alt=&#34;字节数组的长度限定&#34;&gt;
+	&lt;/a&gt;
+	
+	&lt;figcaption&gt;字节数组的长度限定&lt;/figcaption&gt;
+	
+&lt;/figure&gt;&lt;/p&gt;
+&lt;p&gt;整数值是以下六种长度的其中一种：&lt;/p&gt;
+&lt;p&gt;&lt;figure 
+	&gt;
+	&lt;a href=&#34;https://cdn.jsdelivr.net/gh/davyxx3/pics/blog_img/image-20211205022633971.png&#34; &gt;
+		&lt;img src=&#34;https://cdn.jsdelivr.net/gh/davyxx3/pics/blog_img/image-20211205022633971.png&#34;
+			
+			
+			
+			loading=&#34;lazy&#34;
+			alt=&#34;整数类型的限定&#34;&gt;
+	&lt;/a&gt;
+	
+	&lt;figcaption&gt;整数类型的限定&lt;/figcaption&gt;
+	
+&lt;/figure&gt;&lt;/p&gt;
+&lt;p&gt;节点结构：&lt;/p&gt;
+&lt;p&gt;&lt;figure 
+	&gt;
+	&lt;a href=&#34;https://cdn.jsdelivr.net/gh/davyxx3/pics/blog_img/image-20211205022503495.png&#34; &gt;
+		&lt;img src=&#34;https://cdn.jsdelivr.net/gh/davyxx3/pics/blog_img/image-20211205022503495.png&#34;
+			
+			
+			
+			loading=&#34;lazy&#34;
+			&gt;
+	&lt;/a&gt;
+	
+&lt;/figure&gt;&lt;/p&gt;
+&lt;h5 id=&#34;previous_entry_length&#34;&gt;previous_entry_length&lt;/h5&gt;
+&lt;p&gt;长度可以是1字节或5字节，记录了前一个节点的长度&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;如果前一个节点长度小于254字节，则此属性长度为1字节，直接保存长度&lt;/li&gt;
+&lt;li&gt;如果前一个节点长度大于等于254字节，则为5字节，第一字节会被设为0xFE，后四个字节保存长度&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;可以使用此属性从表尾向表头遍历列表&lt;/p&gt;
+&lt;h5 id=&#34;encoding&#34;&gt;encoding&lt;/h5&gt;
+&lt;p&gt;保存了数据类型和长度，将两部分保存在一起，起到了压缩空间的作用&lt;/p&gt;
+&lt;p&gt;&lt;figure 
+	&gt;
+	&lt;a href=&#34;https://cdn.jsdelivr.net/gh/davyxx3/pics/blog_img/image-20211205023014630.png&#34; &gt;
+		&lt;img src=&#34;https://cdn.jsdelivr.net/gh/davyxx3/pics/blog_img/image-20211205023014630.png&#34;
+			
+			
+			
+			loading=&#34;lazy&#34;
+			alt=&#34;编码的规则&#34;&gt;
+	&lt;/a&gt;
+	
+	&lt;figcaption&gt;编码的规则&lt;/figcaption&gt;
+	
+&lt;/figure&gt;&lt;/p&gt;
+&lt;h5 id=&#34;content&#34;&gt;content&lt;/h5&gt;
+&lt;p&gt;保存节点的值&lt;/p&gt;
+&lt;h4 id=&#34;连锁更新&#34;&gt;连锁更新&lt;/h4&gt;
+&lt;p&gt;节点的增加或删除，会引起previous_entry_length属性的连锁更新&lt;/p&gt;
+&lt;h2 id=&#34;底层对象&#34;&gt;底层对象&lt;/h2&gt;
+&lt;p&gt;一种对象可以利用几种数据结构储存对应的数据，需要根据情况来选择&lt;/p&gt;
+&lt;p&gt;当在Redis中新建键值对时，我们至少创建了两个对象：键对象和值对象&lt;/p&gt;
+&lt;p&gt;每个对象都由一个redisObject结构表示&lt;/p&gt;
+&lt;p&gt;&lt;figure 
+	&gt;
+	&lt;a href=&#34;https://cdn.jsdelivr.net/gh/davyxx3/pics/blog_img/image-20211206181530857.png&#34; &gt;
+		&lt;img src=&#34;https://cdn.jsdelivr.net/gh/davyxx3/pics/blog_img/image-20211206181530857.png&#34;
+			
+			
+			
+			loading=&#34;lazy&#34;
+			alt=&#34;对象的底层结构(1)&#34;&gt;
+	&lt;/a&gt;
+	
+	&lt;figcaption&gt;对象的底层结构(1)&lt;/figcaption&gt;
+	
+&lt;/figure&gt;&lt;/p&gt;
+&lt;p&gt;&lt;figure 
+	&gt;
+	&lt;a href=&#34;https://cdn.jsdelivr.net/gh/davyxx3/pics/blog_img/image-20211206181543696.png&#34; &gt;
+		&lt;img src=&#34;https://cdn.jsdelivr.net/gh/davyxx3/pics/blog_img/image-20211206181543696.png&#34;
+			
+			
+			
+			loading=&#34;lazy&#34;
+			alt=&#34;对象的底层结构(2)&#34;&gt;
+	&lt;/a&gt;
+	
+	&lt;figcaption&gt;对象的底层结构(2)&lt;/figcaption&gt;
+	
+&lt;/figure&gt;&lt;/p&gt;
+&lt;h3 id=&#34;类型&#34;&gt;类型&lt;/h3&gt;
+&lt;p&gt;五种类型：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;字符串对象&lt;/li&gt;
+&lt;li&gt;列表对象&lt;/li&gt;
+&lt;li&gt;哈希对象&lt;/li&gt;
+&lt;li&gt;集合对象&lt;/li&gt;
+&lt;li&gt;有序集合对象&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;对于Redis键值对来说：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;键：总是一个字符串对象&lt;/li&gt;
+&lt;li&gt;值：可以是五种类型中的一种&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;可以使用TYPE操作查看对象的类型&lt;/p&gt;
+&lt;h3 id=&#34;编码&#34;&gt;编码&lt;/h3&gt;
+&lt;p&gt;对象实际使用的数据类型由编码决定，也就是redisObject中的encoding属性&lt;/p&gt;
+&lt;p&gt;&lt;figure 
+	&gt;
+	&lt;a href=&#34;https://cdn.jsdelivr.net/gh/davyxx3/pics/blog_img/image-20211206180804399.png&#34; &gt;
+		&lt;img src=&#34;https://cdn.jsdelivr.net/gh/davyxx3/pics/blog_img/image-20211206180804399.png&#34;
+			
+			
+			
+			loading=&#34;lazy&#34;
+			alt=&#34;编码常量和数据结构的对应关系&#34;&gt;
+	&lt;/a&gt;
+	
+	&lt;figcaption&gt;编码常量和数据结构的对应关系&lt;/figcaption&gt;
+	
+&lt;/figure&gt;&lt;/p&gt;
+&lt;p&gt;可以使用OBJECT ENCODING操作查看对象的编码&lt;/p&gt;
+&lt;p&gt;Redis中对象类型和底层数据结构的关系：&lt;/p&gt;
+&lt;p&gt;&lt;figure 
+	&gt;
+	&lt;a href=&#34;https://cdn.jsdelivr.net/gh/davyxx3/pics/blog_img/image-20211206180812676.png&#34; &gt;
+		&lt;img src=&#34;https://cdn.jsdelivr.net/gh/davyxx3/pics/blog_img/image-20211206180812676.png&#34;
+			
+			
+			
+			loading=&#34;lazy&#34;
+			alt=&#34;对象类型和底层数据结构的关系(1)&#34;&gt;
+	&lt;/a&gt;
+	
+	&lt;figcaption&gt;对象类型和底层数据结构的关系(1)&lt;/figcaption&gt;
+	
+&lt;/figure&gt;&lt;/p&gt;
+&lt;p&gt;&lt;figure 
+	&gt;
+	&lt;a href=&#34;https://cdn.jsdelivr.net/gh/davyxx3/pics/blog_img/image-20211206180821150.png&#34; &gt;
+		&lt;img src=&#34;https://cdn.jsdelivr.net/gh/davyxx3/pics/blog_img/image-20211206180821150.png&#34;
+			
+			
+			
+			loading=&#34;lazy&#34;
+			alt=&#34;对象类型和底层数据结构的关系(2)&#34;&gt;
+	&lt;/a&gt;
+	
+	&lt;figcaption&gt;对象类型和底层数据结构的关系(2)&lt;/figcaption&gt;
+	
+&lt;/figure&gt;&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;注意：有序集合（zset）的跳跃表实现中，同时使用了跳跃表和字典！&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;原因：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;跳跃表按顺序遍历很方便，但查找元素对应的分值不方便，需要O(logN)&lt;/li&gt;
+&lt;li&gt;字典查找元素对应的分值方便，为O(1)，但无法做到按顺序遍历&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;因此有序集合就将它们一起结合使用了，需要查找分值的时候使用字典；需要按顺序遍历或者范围查找的时候使用跳跃表&lt;/p&gt;
+&lt;h2 id=&#34;总结&#34;&gt;总结&lt;/h2&gt;
+&lt;p&gt;&lt;figure 
+	&gt;
+	&lt;a href=&#34;https://cdn.jsdelivr.net/gh/davyxx3/pics/blog_img/image-20211206180830970.png&#34; &gt;
+		&lt;img src=&#34;https://cdn.jsdelivr.net/gh/davyxx3/pics/blog_img/image-20211206180830970.png&#34;
+			
+			
+			
+			loading=&#34;lazy&#34;
+			alt=&#34;Redis底层结构概览&#34;&gt;
+	&lt;/a&gt;
+	
+	&lt;figcaption&gt;Redis底层结构概览&lt;/figcaption&gt;
+	
+&lt;/figure&gt;&lt;/p&gt;
+</description>
+        </item>
+        <item>
         <title>AbstractQueuedSynchronizer源码探究</title>
         <link>https://davyxx3.github.io/p/abstractqueuedsynchronizer%E6%BA%90%E7%A0%81%E6%8E%A2%E7%A9%B6/</link>
         <pubDate>Tue, 30 Nov 2021 01:00:00 +0800</pubDate>

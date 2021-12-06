@@ -2,38 +2,41 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
   xmlns:xhtml="http://www.w3.org/1999/xhtml">
   <url>
-    <loc>https://davyxx3.github.io/p/abstractqueuedsynchronizer%E6%BA%90%E7%A0%81%E6%8E%A2%E7%A9%B6/</loc>
-    <lastmod>2021-11-30T01:00:00+08:00</lastmod>
-  </url><url>
     <loc>https://davyxx3.github.io/categories/</loc>
-    <lastmod>2021-11-30T01:00:00+08:00</lastmod>
+    <lastmod>2021-12-06T01:00:00+08:00</lastmod>
   </url><url>
     <loc>https://davyxx3.github.io/</loc>
+    <lastmod>2021-12-06T01:00:00+08:00</lastmod>
+  </url><url>
+    <loc>https://davyxx3.github.io/post/</loc>
+    <lastmod>2021-12-06T01:00:00+08:00</lastmod>
+  </url><url>
+    <loc>https://davyxx3.github.io/p/redis%E5%BA%95%E5%B1%82%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/</loc>
+    <lastmod>2021-12-06T01:00:00+08:00</lastmod>
+  </url><url>
+    <loc>https://davyxx3.github.io/tags/</loc>
+    <lastmod>2021-12-06T01:00:00+08:00</lastmod>
+  </url><url>
+    <loc>https://davyxx3.github.io/categories/%E5%BC%80%E5%8F%91/</loc>
+    <lastmod>2021-12-06T01:00:00+08:00</lastmod>
+  </url><url>
+    <loc>https://davyxx3.github.io/tags/%E6%95%B0%E6%8D%AE%E5%BA%93/</loc>
+    <lastmod>2021-12-06T01:00:00+08:00</lastmod>
+  </url><url>
+    <loc>https://davyxx3.github.io/tags/%E7%BC%93%E5%AD%98/</loc>
+    <lastmod>2021-12-06T01:00:00+08:00</lastmod>
+  </url><url>
+    <loc>https://davyxx3.github.io/p/abstractqueuedsynchronizer%E6%BA%90%E7%A0%81%E6%8E%A2%E7%A9%B6/</loc>
     <lastmod>2021-11-30T01:00:00+08:00</lastmod>
   </url><url>
     <loc>https://davyxx3.github.io/tags/java/</loc>
     <lastmod>2021-11-30T01:00:00+08:00</lastmod>
   </url><url>
-    <loc>https://davyxx3.github.io/post/</loc>
-    <lastmod>2021-11-30T01:00:00+08:00</lastmod>
-  </url><url>
-    <loc>https://davyxx3.github.io/tags/</loc>
-    <lastmod>2021-11-30T01:00:00+08:00</lastmod>
-  </url><url>
     <loc>https://davyxx3.github.io/tags/%E5%B9%B6%E5%8F%91/</loc>
-    <lastmod>2021-11-30T01:00:00+08:00</lastmod>
-  </url><url>
-    <loc>https://davyxx3.github.io/categories/%E5%BC%80%E5%8F%91/</loc>
     <lastmod>2021-11-30T01:00:00+08:00</lastmod>
   </url><url>
     <loc>https://davyxx3.github.io/tags/%E6%BA%90%E7%A0%81/</loc>
     <lastmod>2021-11-30T01:00:00+08:00</lastmod>
-  </url><url>
-    <loc>https://davyxx3.github.io/tags/%E6%95%B0%E6%8D%AE%E5%BA%93/</loc>
-    <lastmod>2021-11-26T10:00:00+08:00</lastmod>
-  </url><url>
-    <loc>https://davyxx3.github.io/tags/%E7%BC%93%E5%AD%98/</loc>
-    <lastmod>2021-11-26T10:00:00+08:00</lastmod>
   </url><url>
     <loc>https://davyxx3.github.io/p/%E8%B0%88%E8%B0%88%E7%BC%93%E5%AD%98%E7%A9%BF%E9%80%8F%E5%87%BB%E7%A9%BF%E5%92%8C%E9%9B%AA%E5%B4%A9/</loc>
     <lastmod>2021-11-26T10:00:00+08:00</lastmod>
