@@ -2,132 +2,54 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>Posts on CyderX</title>
-    <link>https://davyxx3.github.io/post/</link>
+    <link>https://cyderx.com/post/</link>
     <description>Recent content in Posts on CyderX</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>zh-cn</language>
-    <lastBuildDate>Mon, 06 Dec 2021 01:00:00 +0800</lastBuildDate><atom:link href="https://davyxx3.github.io/post/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Mon, 06 Dec 2021 01:00:00 +0800</lastBuildDate><atom:link href="https://cyderx.com/post/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>Redis底层数据结构</title>
-      <link>https://davyxx3.github.io/p/redis%E5%BA%95%E5%B1%82%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/</link>
+      <link>https://cyderx.com/p/redis%E5%BA%95%E5%B1%82%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/</link>
       <pubDate>Mon, 06 Dec 2021 01:00:00 +0800</pubDate>
       
-      <guid>https://davyxx3.github.io/p/redis%E5%BA%95%E5%B1%82%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/</guid>
-      <description>先挖个坑，还没更完，有时间再补充完整 :)
-底层数据结构 SDS 简单动态字符串（Simple Dynamic String）
-SDS的底层结构
-优点：
- 常数复杂度获取字符串长度 防止缓冲区溢出 减少修改字符串的内存重分配次数（空间预分配，小于1MB时分配和len同样大小的未使用空间，大于1MB时分配1MB的未使用空间） 二进制安全（可以包含空字符） 兼容部分C字符串函数  链表 链表的底层结构
-特点：
- 双端 无环 带表头指针和表尾指针 带链表长度计数器 多态  字典 字典的底层结构
-  dict（字典） -&amp;gt; dictht（dict hash table，也就是哈希表）-&amp;gt; dictEntry（哈希表节点）
-  一般字典只使用ht[0]哈希表，ht[1]只会在扩容时使用
-  rehashidx记录rehash目前的进度，如果没有在进行rehash，则值为-1
-  Redis使用MurmurHash2算法计算hash值
-在使用链表解决哈希冲突问题时，Redis把新加入的节点放在链表的表头位置，从而加快查找速度
-rehash   为ht[1]分配空间，大小取决于ht[0]的键值对数量
-  扩容：ht[1]的大小为第一个大于等于ht[0].used * 2的2^n
-  收缩：ht[1]的大小为第一个大于等于ht[0].used的2^n
-    重新计算索引值，移动元素
-  释放ht[0]，ht[1]变为ht[0]，ht[1]创建一个空表</description>
+      <guid>https://cyderx.com/p/redis%E5%BA%95%E5%B1%82%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/</guid>
+      <description>先挖个坑，还没更完，有时间再补充完整 :) 底层数据结构 SDS 简单动态字符串（Simple Dynamic String） SDS的底层结构 优点： 常数复杂度获取字符串长</description>
     </item>
     
     <item>
       <title>AbstractQueuedSynchronizer源码探究</title>
-      <link>https://davyxx3.github.io/p/abstractqueuedsynchronizer%E6%BA%90%E7%A0%81%E6%8E%A2%E7%A9%B6/</link>
+      <link>https://cyderx.com/p/abstractqueuedsynchronizer%E6%BA%90%E7%A0%81%E6%8E%A2%E7%A9%B6/</link>
       <pubDate>Tue, 30 Nov 2021 01:00:00 +0800</pubDate>
       
-      <guid>https://davyxx3.github.io/p/abstractqueuedsynchronizer%E6%BA%90%E7%A0%81%E6%8E%A2%E7%A9%B6/</guid>
-      <description>AQS概念 AbstractQueuedSynchronizer是JUC中非常重要的一个同步控制工具
-在JDK的并发包中，我们能看到很多很多的同步器类，比如ReentrantLock（可重入锁）、Semaphore（信号量）和CountDownLatch（倒计时闭锁）等等
-在这些类中，都使用了AbstractQueuedSynchronizer（AQS）来构建
-它们之间的继承关系如下图所示：
-AQS的继承关系
-可以看出，在基于AQS构建的同步器类中，都继承了AbstractQueuedSynchronizer的子类，而且名字都叫做Sync
-特别地，在ReentrantLock中Sync有两种实现类：NonfairSync和FairSync，分别实现了对不公平锁和公平锁的控制
-AQS的概念，总共有三点：
- 状态信息：我们需要一个整数来保存当前的同步状态信息，这个信息在AbstractQueuedSynchronizer中由int属性state保存。它可以表示任意状态，比如ReentrantLock用它来表示线程已经重复获取锁的次数，Semaphore用它来表示剩余许可的数量 获取（aquire）：获取锁或许可，通常会阻塞，直至状态信息处于可被获取的状态 释放（release）：释放锁或许可，通常不会阻塞，释放操作会唤醒因获取而被阻塞的线程  AQS的内部结构 AQS在类内部维护了一个等待队列，这个队列叫作CLH队列。这个CLH队列实际上是一个双向链表，其示意图如下：AQS的等待队列（CLH队列）
- CLH队列的优点：
- 先进先出，可以保证公平性 非阻塞的队列，通过自旋锁和CAS保证节点插入和移除的原子性，实现无锁快速插入 采用了自旋锁思想，所以CLH队列也是一种基于链表的可扩展、高性能、公平的自旋锁   再来看一下AQS的UML图：
-AQS的UML图
-我们会发现：
-  链表的节点就是AQS内部的抽象类Node
-  AQS中的head就是指向队列的head节点，tail指向队列的尾节点
-  Node中有指向前节点的指针（prev）和指向后节点的指针（next），用waiter存放与此节点关联的线程，status则指明了线程的状态
-  可以看出，这个等待队列是存放着被阻塞的线程。在这个等待队列中的线程，会不断地尝试acquire，直到获取到锁或许可，改变状态信息为止
-实际上，AQS内部不只是有一个等待队列，它为各个Condition对象都维护了一个条件等待队列
-图中的ConditionObject就是一个Condition实现类，内部维护了firstWaiter和lastWaiter，指向队列的头和尾
-ConditionObject类的结构
-当线程因为调用Condition类中的await()挂起时，它们会进入条件等待队列中。当它们被signal()或signalAll()唤醒时，会将他们转移到等待队列中，去尝试acquire
-等待队列（同步队列）和条件等待队列
-因为队列不一样，节点也不一样，因此Node节点派生了3个子类
- SharedNode：共享锁队列的节点 ExclusiveNode：独占锁队列的节点 ConditionNode：条件等待队列的节点  总而言之，AQS的结构如下图所示：
-AQS的总体结构
-源码分析 让我们从一个简单的非公平ReentrantLock出发，分析AQS在加锁时的表现
-lock() 首先调用ReentrantLock的lock()
-public void lock() { // 此处是调用了NonFairSync类的lock方法 	// NonFairSync就是AQS在ReentrantLock中的实现类  sync.</description>
+      <guid>https://cyderx.com/p/abstractqueuedsynchronizer%E6%BA%90%E7%A0%81%E6%8E%A2%E7%A9%B6/</guid>
+      <description>AQS概念 AbstractQueuedSynchronizer是JUC中非常重要的一个同步控制工具 在JDK的并发包中，我们能看到很多很多的同</description>
     </item>
     
     <item>
       <title>谈谈缓存穿透、击穿和雪崩</title>
-      <link>https://davyxx3.github.io/p/%E8%B0%88%E8%B0%88%E7%BC%93%E5%AD%98%E7%A9%BF%E9%80%8F%E5%87%BB%E7%A9%BF%E5%92%8C%E9%9B%AA%E5%B4%A9/</link>
+      <link>https://cyderx.com/p/%E8%B0%88%E8%B0%88%E7%BC%93%E5%AD%98%E7%A9%BF%E9%80%8F%E5%87%BB%E7%A9%BF%E5%92%8C%E9%9B%AA%E5%B4%A9/</link>
       <pubDate>Fri, 26 Nov 2021 10:00:00 +0800</pubDate>
       
-      <guid>https://davyxx3.github.io/p/%E8%B0%88%E8%B0%88%E7%BC%93%E5%AD%98%E7%A9%BF%E9%80%8F%E5%87%BB%E7%A9%BF%E5%92%8C%E9%9B%AA%E5%B4%A9/</guid>
-      <description>缓存概览 缓存的收益：
- 加速读写，优化用户体验 降低后端负载  缓存的成本：
- 数据可能无法保证一致性 架构复杂度增大 代码维护成本（运维成本）增大  适用场景：
- 开销大的复杂计算 加速请求响应  缓存穿透及优化 缓存穿透：查询一个根本不存在的数据，缓存层和存储层都不会命中
-缓存穿透导致不存在的数据每次请求都要到存储层查询，缓存的保护失去了意义，会使后端存储负载加大
-缓存穿透图示
-解决办法
-  缓存空对象：存储层不命中后，将空对象保存至缓存层中，之后的访问都会从缓存层获取，这样就保护了后端数据
-缺点：
- 缓存空对象，意味着缓存中存了更多的键，会占用空间，可以通过设置过期时间解决 缓存层和存储层会有一段时间窗口的不一致（比如缓存层中存了空对象并设置过期时间为5分钟，但此时存储层刚好添加了该键对应的数据，就造成了数据不一致），可以使用消息系统或者其他方式解决    布隆过滤器拦截：缓存穿透是查询一个根本不存在的数据，因此可以在缓存层前加一个布隆过滤器，将不存在的数据拦截。
- 关于布隆过滤器，可以查看我写的另一篇文章：布隆过滤器的简单总结
-   
-两种解决方式的对比
-   解决方式 适用场景 代价     缓存空对象 数据命中不高、数据变化频繁（实时性高） 需要过多缓存空间、数据不一致   布隆过滤器 数据命中不高，数据相对固定（实时性低） 代码维护复杂    PS：布隆过滤器不适用于数据变化频繁的场景（因为要不停地进行数据的插入和删除，而布隆过滤器对于删除操作极不友好），比较适用于数据相对固定的场景
-缓存击穿及优化 缓存层的某个key承受着非常高的并发，当这个key失效的瞬间，大量的请求会同时击穿缓存，打到DB，就像在纱窗上戳破了一个洞
-缓存击穿图示</description>
+      <guid>https://cyderx.com/p/%E8%B0%88%E8%B0%88%E7%BC%93%E5%AD%98%E7%A9%BF%E9%80%8F%E5%87%BB%E7%A9%BF%E5%92%8C%E9%9B%AA%E5%B4%A9/</guid>
+      <description>缓存概览 缓存的收益： 加速读写，优化用户体验 降低后端负载 缓存的成本： 数据可能无法保证一致性 架构复杂度增大 代码维护成本（运维成本）增大 适用场景：</description>
     </item>
     
     <item>
       <title>布隆过滤器的简单总结</title>
-      <link>https://davyxx3.github.io/p/%E5%B8%83%E9%9A%86%E8%BF%87%E6%BB%A4%E5%99%A8%E7%9A%84%E7%AE%80%E5%8D%95%E6%80%BB%E7%BB%93/</link>
+      <link>https://cyderx.com/p/%E5%B8%83%E9%9A%86%E8%BF%87%E6%BB%A4%E5%99%A8%E7%9A%84%E7%AE%80%E5%8D%95%E6%80%BB%E7%BB%93/</link>
       <pubDate>Fri, 26 Nov 2021 08:00:00 +0800</pubDate>
       
-      <guid>https://davyxx3.github.io/p/%E5%B8%83%E9%9A%86%E8%BF%87%E6%BB%A4%E5%99%A8%E7%9A%84%E7%AE%80%E5%8D%95%E6%80%BB%E7%BB%93/</guid>
-      <description>布隆过滤器（Bloom Filter）是一个很长的二进制向量和一系列随机映射函数
-用途：判断一个元素是否在一个集合中
-严谨来说，应该是：判断某样东西一定不存在或可能存在
-数据存入  经过K个哈希函数计算，返回K个计算出的hash值 这k个hash值映射到对应的k个数组下标 将二进制向量中这k个下标的对应数据改为1  数据存入的过程
-数据查询  经过K个哈希函数计算该数据，算出k个hash值 以hash值为下标在二进制向量中找到对应的数据 若有一处的数据为0，则该数据不存在，否则说明数据可能存在（并不是一定存在，有误判的可能）  参数选择 二进制向量的长度会影响误报率，长度越长，误报率越低
- 若长度太小，所有bit都置成1的话，那么查询任何值都会返回“可能存在”，无法起到过滤的目的 若长度太大，则可能会造成空间浪费  哈希函数的个数也会影响误报率，函数个数越多，误报率越低
- 若函数个数太多，则二进制向量置1的速度会变得很快，这样布隆过滤器的效率会变低 若函数个数太少，则误报率变高  参数的选取公式：
-m和k的计算公式
-k为哈希函数个数，m为布隆过滤器长度，n为插入元素的个数，p为误报率
-总结 优点：
- 占用空间小（存储的是二进制数据） 查询速度快，时间复杂度为O(k) 保密性很好，不存储任何原始数据，只有二进制数据  缺点：
- 存在误判的可能（不同的数据可能映射到二进制向量中的相同位置） 删除困难，也是因为上述的理由  与HashMap的比较：
-HashMap速度也很快，但占用空间太大，因为有负载因子的存在，为了避免哈希冲突，空间是没办法用满的，会造成大量的空间浪费。使用布隆过滤器可以在不牺牲查找速度的同时，降低空间消耗，代价就是判断并不完全准确
-应用场景：
- URL黑名单过滤 解决缓存穿透的问题 &amp;hellip;  </description>
+      <guid>https://cyderx.com/p/%E5%B8%83%E9%9A%86%E8%BF%87%E6%BB%A4%E5%99%A8%E7%9A%84%E7%AE%80%E5%8D%95%E6%80%BB%E7%BB%93/</guid>
+      <description>布隆过滤器（Bloom Filter）是一个很长的二进制向量和一系列随机映射函数 用途：判断一个元素是否在一个集合中 严谨来说，应该是：判断某样东</description>
     </item>
     
     <item>
       <title>ConcurrentLinkedQueue源码分析</title>
-      <link>https://davyxx3.github.io/p/concurrentlinkedqueue%E6%BA%90%E7%A0%81%E5%88%86%E6%9E%90/</link>
+      <link>https://cyderx.com/p/concurrentlinkedqueue%E6%BA%90%E7%A0%81%E5%88%86%E6%9E%90/</link>
       <pubDate>Fri, 26 Nov 2021 01:00:00 +0800</pubDate>
       
-      <guid>https://davyxx3.github.io/p/concurrentlinkedqueue%E6%BA%90%E7%A0%81%E5%88%86%E6%9E%90/</guid>
-      <description>简介 ConcurrentLinkedQueue是高并发环境中性能最好的队列
-要想队列保证线程安全，有两种实现方式
- 阻塞算法：锁 非阻塞算法：循环CAS  在队列中，BlockingQueue是阻塞算法的典型实现（使用锁来保证线程安全），而ConcurrentLinkedQueue则是非阻塞算法的典型实现（使用CAS保证线程安全）
-原理 ConcurrentLinkedQueue的基本结构
-Node节点
-static final class Node&amp;lt;E&amp;gt; { volatile E item; volatile Node&amp;lt;E&amp;gt; next; // 利用CAS操作向后添加一个节点  void appendRelaxed(Node&amp;lt;E&amp;gt; next) { NEXT.set(this, next); } // 利用CAS操作设置值（cmp是期望值，val是要设置的值）  boolean casItem(E cmp, E val) { return ITEM.compareAndSet(this, cmp, val); } } head和tail
-transient volatile Node&amp;lt;E&amp;gt; head; private transient volatile Node&amp;lt;E&amp;gt; tail; // 初始时，head和tail都指向一个空节点 public ConcurrentLinkedQueue() { head = tail = new Node&amp;lt;E&amp;gt;(); } CoucurrentLinkedQueue规定了如下几个不变性：</description>
+      <guid>https://cyderx.com/p/concurrentlinkedqueue%E6%BA%90%E7%A0%81%E5%88%86%E6%9E%90/</guid>
+      <description>简介 ConcurrentLinkedQueue是高并发环境中性能最好的队列 要想队列保证线程安全，有两种实现方式 阻塞算法：锁 非阻塞算法：循环C</description>
     </item>
     
   </channel>

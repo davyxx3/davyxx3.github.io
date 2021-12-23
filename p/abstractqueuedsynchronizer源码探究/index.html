@@ -3,17 +3,17 @@
     <head><meta charset='utf-8'>
 <meta name='viewport' content='width=device-width, initial-scale=1'><meta name='description' content='透过ReentrantLock非公平锁的加锁和解锁过程，深入源码揭秘AQS的原理'><title>AbstractQueuedSynchronizer源码探究</title>
 
-<link rel='canonical' href='https://davyxx3.github.io/p/abstractqueuedsynchronizer%E6%BA%90%E7%A0%81%E6%8E%A2%E7%A9%B6/'>
+<link rel='canonical' href='https://cyderx.com/p/abstractqueuedsynchronizer%E6%BA%90%E7%A0%81%E6%8E%A2%E7%A9%B6/'>
 
 <link rel="stylesheet" href="/scss/style.min.css"><meta property='og:title' content='AbstractQueuedSynchronizer源码探究'>
 <meta property='og:description' content='透过ReentrantLock非公平锁的加锁和解锁过程，深入源码揭秘AQS的原理'>
-<meta property='og:url' content='https://davyxx3.github.io/p/abstractqueuedsynchronizer%E6%BA%90%E7%A0%81%E6%8E%A2%E7%A9%B6/'>
+<meta property='og:url' content='https://cyderx.com/p/abstractqueuedsynchronizer%E6%BA%90%E7%A0%81%E6%8E%A2%E7%A9%B6/'>
 <meta property='og:site_name' content='CyderX'>
-<meta property='og:type' content='article'><meta property='article:section' content='Post' /><meta property='article:tag' content='Java' /><meta property='article:tag' content='并发' /><meta property='article:tag' content='源码' /><meta property='article:published_time' content='2021-11-30T01:00:00&#43;08:00'/><meta property='article:modified_time' content='2021-11-30T01:00:00&#43;08:00'/><meta property='og:image' content='https://davyxx3.github.io/p/abstractqueuedsynchronizer%E6%BA%90%E7%A0%81%E6%8E%A2%E7%A9%B6/bg.jpg' />
+<meta property='og:type' content='article'><meta property='article:section' content='Post' /><meta property='article:tag' content='Java' /><meta property='article:tag' content='并发' /><meta property='article:tag' content='源码' /><meta property='article:published_time' content='2021-11-30T01:00:00&#43;08:00'/><meta property='article:modified_time' content='2021-11-30T01:00:00&#43;08:00'/><meta property='og:image' content='https://cyderx.com/p/abstractqueuedsynchronizer%E6%BA%90%E7%A0%81%E6%8E%A2%E7%A9%B6/bg.jpg' />
 <meta name="twitter:site" content="@davyxx3">
     <meta name="twitter:creator" content="@davyxx3"><meta name="twitter:title" content="AbstractQueuedSynchronizer源码探究">
 <meta name="twitter:description" content="透过ReentrantLock非公平锁的加锁和解锁过程，深入源码揭秘AQS的原理"><meta name="twitter:card" content="summary_large_image">
-    <meta name="twitter:image" content='https://davyxx3.github.io/p/abstractqueuedsynchronizer%E6%BA%90%E7%A0%81%E6%8E%A2%E7%A9%B6/bg.jpg' />
+    <meta name="twitter:image" content='https://cyderx.com/p/abstractqueuedsynchronizer%E6%BA%90%E7%A0%81%E6%8E%A2%E7%A9%B6/bg.jpg' />
     </head>
     <body class="
     article-page has-toc
@@ -124,7 +124,7 @@
 
 
                 <time class="article-time--reading">
-                    阅读时长: 4 分钟
+                    阅读时长: 8 分钟
                 </time>
             </div>
         
