@@ -13,7 +13,35 @@
 <meta name="twitter:site" content="@davyxx3">
     <meta name="twitter:creator" content="@davyxx3"><meta name="twitter:title" content="谈谈缓存穿透、击穿和雪崩">
 <meta name="twitter:description" content="几个缓存的常见问题和优化方法"><meta name="twitter:card" content="summary_large_image">
-    <meta name="twitter:image" content='https://cyderx.com/p/%E8%B0%88%E8%B0%88%E7%BC%93%E5%AD%98%E7%A9%BF%E9%80%8F%E5%87%BB%E7%A9%BF%E5%92%8C%E9%9B%AA%E5%B4%A9/bg.jpeg' />
+    <meta name="twitter:image" content='https://cyderx.com/p/%E8%B0%88%E8%B0%88%E7%BC%93%E5%AD%98%E7%A9%BF%E9%80%8F%E5%87%BB%E7%A9%BF%E5%92%8C%E9%9B%AA%E5%B4%A9/bg.jpeg' /><style>
+  :root {
+    --article-font-family: "Open Sans", "Noto Serif SC", var(--base-font-family);
+  }
+</style>
+
+<script>
+  (function () {
+    const customFont = document.createElement("link");
+    customFont.href =
+      "https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@400;700&display=swap";
+
+    customFont.type = "text/css";
+    customFont.rel = "stylesheet";
+
+    document.head.appendChild(customFont);
+  })();
+  (function () {
+    const customFont = document.createElement("link");
+    customFont.href =
+      "https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;700&display=swap";
+
+    customFont.type = "text/css";
+    customFont.rel = "stylesheet";
+
+    document.head.appendChild(customFont);
+  })();
+</script>
+
     </head>
     <body class="
     article-page has-toc
