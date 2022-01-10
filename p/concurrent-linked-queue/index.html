@@ -1,0 +1,665 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+    <head><meta charset='utf-8'>
+<meta name='viewport' content='width=device-width, initial-scale=1'><meta name='description' content='深入探讨ConcurrentLinkedQueue的出队入队原理'><title>ConcurrentLinkedQueue源码分析</title>
+
+<link rel='canonical' href='https://cyderx.com/p/concurrent-linked-queue/'>
+
+<link rel="stylesheet" href="/scss/style.min.css"><meta property='og:title' content='ConcurrentLinkedQueue源码分析'>
+<meta property='og:description' content='深入探讨ConcurrentLinkedQueue的出队入队原理'>
+<meta property='og:url' content='https://cyderx.com/p/concurrent-linked-queue/'>
+<meta property='og:site_name' content='CyderX'>
+<meta property='og:type' content='article'><meta property='article:section' content='Post' /><meta property='article:tag' content='Java' /><meta property='article:tag' content='并发' /><meta property='article:tag' content='源码' /><meta property='article:published_time' content='2021-11-26T01:00:00&#43;08:00'/><meta property='article:modified_time' content='2021-11-26T01:00:00&#43;08:00'/><meta property='og:image' content='https://cyderx.com/p/concurrent-linked-queue/CLQ.jpg' />
+<meta name="twitter:site" content="@davyxx3">
+    <meta name="twitter:creator" content="@davyxx3"><meta name="twitter:title" content="ConcurrentLinkedQueue源码分析">
+<meta name="twitter:description" content="深入探讨ConcurrentLinkedQueue的出队入队原理"><meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:image" content='https://cyderx.com/p/concurrent-linked-queue/CLQ.jpg' /><style>
+  :root {
+    --article-font-family: "Open Sans", "Noto Serif SC", var(--base-font-family);
+  }
+</style>
+
+<script>
+  (function () {
+    const customFont = document.createElement("link");
+    customFont.href =
+      "https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@400;700&display=swap";
+
+    customFont.type = "text/css";
+    customFont.rel = "stylesheet";
+
+    document.head.appendChild(customFont);
+  })();
+  (function () {
+    const customFont = document.createElement("link");
+    customFont.href =
+      "https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;700&display=swap";
+
+    customFont.type = "text/css";
+    customFont.rel = "stylesheet";
+
+    document.head.appendChild(customFont);
+  })();
+</script>
+
+    </head>
+    <body class="
+    article-page has-toc
+">
+    <script>
+        (function() {
+            const colorSchemeKey = 'StackColorScheme';
+            if(!localStorage.getItem(colorSchemeKey)){
+                localStorage.setItem(colorSchemeKey, "auto");
+            }
+        })();
+    </script><script>
+    (function() {
+        const colorSchemeKey = 'StackColorScheme';
+        const colorSchemeItem = localStorage.getItem(colorSchemeKey);
+        const supportDarkMode = window.matchMedia('(prefers-color-scheme: dark)').matches === true;
+
+        if (colorSchemeItem == 'dark' || colorSchemeItem === 'auto' && supportDarkMode) {
+            
+
+            document.documentElement.dataset.scheme = 'dark';
+        } else {
+            document.documentElement.dataset.scheme = 'light';
+        }
+    })();
+</script>
+<div class="container main-container flex 
+    
+        extended
+    
+">
+    
+        <div id="article-toolbar">
+            <a href="/" class="back-home">
+                <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-chevron-left" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <polyline points="15 6 9 12 15 18" />
+</svg>
+
+
+
+                <span>返回</span>
+            </a>
+        </div>
+    
+<main class="main full-width">
+    <article class="has-image main-article">
+    <header class="article-header">
+        <div class="article-image">
+            <a href="/p/concurrent-linked-queue/">
+                <img src="/p/concurrent-linked-queue/CLQ_hu3d03a01dcc18bc5be0e67db3d8d209a6_166172_800x0_resize_q75_box.jpg"
+                        srcset="/p/concurrent-linked-queue/CLQ_hu3d03a01dcc18bc5be0e67db3d8d209a6_166172_800x0_resize_q75_box.jpg 800w, /p/concurrent-linked-queue/CLQ_hu3d03a01dcc18bc5be0e67db3d8d209a6_166172_1600x0_resize_q75_box.jpg 1600w"
+                        width="800" 
+                        height="427" 
+                        loading="lazy"
+                        alt="Featured image of post ConcurrentLinkedQueue源码分析" />
+                
+            </a>
+        </div>
+    
+
+    <div class="article-details">
+    
+    <header class="article-category">
+        
+            <a href="/categories/%E5%BC%80%E5%8F%91/" >
+                开发
+            </a>
+        
+    </header>
+    
+
+    <h2 class="article-title">
+        <a href="/p/concurrent-linked-queue/">ConcurrentLinkedQueue源码分析</a>
+    </h2>
+
+    
+    <h3 class="article-subtitle">
+        深入探讨ConcurrentLinkedQueue的出队入队原理
+    </h3>
+    
+
+    
+    <footer class="article-time">
+        
+            <div>
+                <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-calendar-time" width="56" height="56" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <path d="M11.795 21h-6.795a2 2 0 0 1 -2 -2v-12a2 2 0 0 1 2 -2h12a2 2 0 0 1 2 2v4" />
+  <circle cx="18" cy="18" r="4" />
+  <path d="M15 3v4" />
+  <path d="M7 3v4" />
+  <path d="M3 11h16" />
+  <path d="M18 16.496v1.504l1 1" />
+</svg>
+                <time class="article-time--published">Nov 26, 2021</time>
+            </div>
+        
+
+        
+            <div>
+                <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-clock" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="12" cy="12" r="9" />
+  <polyline points="12 7 12 12 15 15" />
+</svg>
+
+
+
+                <time class="article-time--reading">
+                    阅读时长: 4 分钟
+                </time>
+            </div>
+        
+    </footer>
+    
+</div>
+</header>
+
+    <section class="article-content">
+    <h2 id="简介">简介</h2>
+<p>ConcurrentLinkedQueue是高并发环境中性能最好的队列</p>
+<p>要想队列保证线程安全，有两种实现方式</p>
+<ul>
+<li>阻塞算法：锁</li>
+<li>非阻塞算法：循环CAS</li>
+</ul>
+<p>在队列中，BlockingQueue是阻塞算法的典型实现（使用锁来保证线程安全），而ConcurrentLinkedQueue则是非阻塞算法的典型实现（使用CAS保证线程安全）</p>
+<h2 id="原理">原理</h2>
+<p><figure 
+	>
+	<a href="https://cdn.jsdelivr.net/gh/davyxx3/pics/blog_img807144-3d3261a627e586dc.jpg" >
+		<img src="https://cdn.jsdelivr.net/gh/davyxx3/pics/blog_img807144-3d3261a627e586dc.jpg"
+			
+			
+			
+			loading="lazy"
+			alt="ConcurrentLinkedQueue的基本结构">
+	</a>
+	
+	<figcaption>ConcurrentLinkedQueue的基本结构</figcaption>
+	
+</figure></p>
+<p>Node节点</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="kd">static</span> <span class="kd">final</span> <span class="kd">class</span> <span class="nc">Node</span><span class="o">&lt;</span><span class="n">E</span><span class="o">&gt;</span> <span class="o">{</span>
+    <span class="kd">volatile</span> <span class="n">E</span> <span class="n">item</span><span class="o">;</span>
+    <span class="kd">volatile</span> <span class="n">Node</span><span class="o">&lt;</span><span class="n">E</span><span class="o">&gt;</span> <span class="n">next</span><span class="o">;</span>
+
+    <span class="c1">// 利用CAS操作向后添加一个节点
+</span><span class="c1"></span>    <span class="kt">void</span> <span class="nf">appendRelaxed</span><span class="o">(</span><span class="n">Node</span><span class="o">&lt;</span><span class="n">E</span><span class="o">&gt;</span> <span class="n">next</span><span class="o">)</span> <span class="o">{</span>
+        <span class="n">NEXT</span><span class="o">.</span><span class="na">set</span><span class="o">(</span><span class="k">this</span><span class="o">,</span> <span class="n">next</span><span class="o">);</span>
+    <span class="o">}</span>
+
+    <span class="c1">// 利用CAS操作设置值（cmp是期望值，val是要设置的值）
+</span><span class="c1"></span>    <span class="kt">boolean</span> <span class="nf">casItem</span><span class="o">(</span><span class="n">E</span> <span class="n">cmp</span><span class="o">,</span> <span class="n">E</span> <span class="n">val</span><span class="o">)</span> <span class="o">{</span>
+        <span class="k">return</span> <span class="n">ITEM</span><span class="o">.</span><span class="na">compareAndSet</span><span class="o">(</span><span class="k">this</span><span class="o">,</span> <span class="n">cmp</span><span class="o">,</span> <span class="n">val</span><span class="o">);</span>
+    <span class="o">}</span>
+<span class="o">}</span>
+</code></pre></div><p>head和tail</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="kd">transient</span> <span class="kd">volatile</span> <span class="n">Node</span><span class="o">&lt;</span><span class="n">E</span><span class="o">&gt;</span> <span class="n">head</span><span class="o">;</span>
+
+<span class="kd">private</span> <span class="kd">transient</span> <span class="kd">volatile</span> <span class="n">Node</span><span class="o">&lt;</span><span class="n">E</span><span class="o">&gt;</span> <span class="n">tail</span><span class="o">;</span>
+
+<span class="c1">// 初始时，head和tail都指向一个空节点
+</span><span class="c1"></span><span class="kd">public</span> <span class="nf">ConcurrentLinkedQueue</span><span class="o">()</span> <span class="o">{</span>
+	<span class="n">head</span> <span class="o">=</span> <span class="n">tail</span> <span class="o">=</span> <span class="k">new</span> <span class="n">Node</span><span class="o">&lt;</span><span class="n">E</span><span class="o">&gt;();</span>
+<span class="o">}</span>
+</code></pre></div><p>CoucurrentLinkedQueue规定了如下几个不变性：</p>
+<ol>
+<li>最后一个元素的next为null</li>
+<li>队列中所有未删除的节点的item都不能为null，且都能从head节点遍历到</li>
+<li>对于要删除的节点，不是直接将其设置为null，而是先将其item域设置为null（迭代器会跳过item为null的节点）</li>
+<li><strong>head和tail并不一定指向真正的头和尾节点，因为它们的更新有滞后性，每次更新会跳跃两个元素</strong></li>
+</ol>
+<h3 id="入队">入队</h3>
+<p><figure 
+	>
+	<a href="https://cdn.jsdelivr.net/gh/davyxx3/pics/blog_imgb04f6051-c6fa-4050-be13-6407b6c4c9f1.png" >
+		<img src="https://cdn.jsdelivr.net/gh/davyxx3/pics/blog_imgb04f6051-c6fa-4050-be13-6407b6c4c9f1.png"
+			
+			
+			
+			loading="lazy"
+			alt="入队过程">
+	</a>
+	
+	<figcaption>入队过程</figcaption>
+	
+</figure></p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="kd">public</span> <span class="kt">boolean</span> <span class="nf">offer</span><span class="o">(</span><span class="n">E</span> <span class="n">e</span><span class="o">)</span> <span class="o">{</span>
+    <span class="c1">// 确保值不为空，且创建新节点
+</span><span class="c1"></span>    <span class="kd">final</span> <span class="n">Node</span><span class="o">&lt;</span><span class="n">E</span><span class="o">&gt;</span> <span class="n">newNode</span> <span class="o">=</span> <span class="k">new</span> <span class="n">Node</span><span class="o">&lt;</span><span class="n">E</span><span class="o">&gt;(</span><span class="n">Objects</span><span class="o">.</span><span class="na">requireNonNull</span><span class="o">(</span><span class="n">e</span><span class="o">));</span>
+
+    <span class="c1">// 循环进行CAS操作，直至成功为止（因为CAS操作有可能失败）
+</span><span class="c1"></span>    <span class="c1">// t：指向tail
+</span><span class="c1"></span>    <span class="c1">// p、q：进行遍历使用的指针，p在前，q在后
+</span><span class="c1"></span>    <span class="k">for</span> <span class="o">(</span><span class="n">Node</span><span class="o">&lt;</span><span class="n">E</span><span class="o">&gt;</span> <span class="n">t</span> <span class="o">=</span> <span class="n">tail</span><span class="o">,</span> <span class="n">p</span> <span class="o">=</span> <span class="n">t</span><span class="o">;;)</span> <span class="o">{</span>
+        <span class="n">Node</span><span class="o">&lt;</span><span class="n">E</span><span class="o">&gt;</span> <span class="n">q</span> <span class="o">=</span> <span class="n">p</span><span class="o">.</span><span class="na">next</span><span class="o">;</span>
+        <span class="k">if</span> <span class="o">(</span><span class="n">q</span> <span class="o">==</span> <span class="kc">null</span><span class="o">)</span> <span class="o">{</span>
+            <span class="c1">// p是最后一个节点的情况，此时q为null
+</span><span class="c1"></span>            <span class="k">if</span> <span class="o">(</span><span class="n">NEXT</span><span class="o">.</span><span class="na">compareAndSet</span><span class="o">(</span><span class="n">p</span><span class="o">,</span> <span class="kc">null</span><span class="o">,</span> <span class="n">newNode</span><span class="o">))</span> <span class="o">{</span>
+                <span class="c1">// 将新创建的节点添加到链表末尾
+</span><span class="c1"></span>                <span class="k">if</span> <span class="o">(</span><span class="n">p</span> <span class="o">!=</span> <span class="n">t</span><span class="o">)</span>
+                <span class="c1">// 当p和t不相等，也就是新创建的节点和原tail中间隔着一个元素时，才更新tail，相当于tail的1次更新跨越2个元素
+</span><span class="c1"></span>                    <span class="n">TAIL</span><span class="o">.</span><span class="na">weakCompareAndSet</span><span class="o">(</span><span class="k">this</span><span class="o">,</span> <span class="n">t</span><span class="o">,</span> <span class="n">newNode</span><span class="o">);</span>
+                <span class="k">return</span> <span class="kc">true</span><span class="o">;</span>
+            <span class="o">}</span>
+            <span class="c1">// CAS失败，再次尝试
+</span><span class="c1"></span>        <span class="o">}</span>
+        <span class="k">else</span> <span class="k">if</span> <span class="o">(</span><span class="n">p</span> <span class="o">==</span> <span class="n">q</span><span class="o">)</span>
+            <span class="c1">// 遇到了哨兵节点，从head开始重新遍历，或者如果有其他线程修改了tail，就使用这个刚被修改的tail
+</span><span class="c1"></span>            <span class="c1">// t != (t = tail)是为了检查在执行过程中，tail是否被其他线程修改，如果是，则进行一次“打赌”，将刚被修改的tail当作链表末尾
+</span><span class="c1"></span>            <span class="c1">// 这样就可以提高性能，省去了重新查找tail的开销
+</span><span class="c1"></span>            <span class="n">p</span> <span class="o">=</span> <span class="o">(</span><span class="n">t</span> <span class="o">!=</span> <span class="o">(</span><span class="n">t</span> <span class="o">=</span> <span class="n">tail</span><span class="o">))</span> <span class="o">?</span> <span class="n">t</span> <span class="o">:</span> <span class="n">head</span><span class="o">;</span>
+        <span class="k">else</span>
+            <span class="c1">// p不是最后一个节点的情况（添加了节点，tail未更新的情况）
+</span><span class="c1"></span>            <span class="c1">// 将p不断推进到链表末尾
+</span><span class="c1"></span>            <span class="n">p</span> <span class="o">=</span> <span class="o">(</span><span class="n">p</span> <span class="o">!=</span> <span class="n">t</span> <span class="o">&amp;&amp;</span> <span class="n">t</span> <span class="o">!=</span> <span class="o">(</span><span class="n">t</span> <span class="o">=</span> <span class="n">tail</span><span class="o">))</span> <span class="o">?</span> <span class="n">t</span> <span class="o">:</span> <span class="n">q</span><span class="o">;</span>
+    <span class="o">}</span>
+<span class="o">}</span>
+</code></pre></div><blockquote>
+<p>在JDK 1.7的实现中，doug lea使用hops变量来控制并减少tail节点的更新频率，并不是每次节点入队后都将 tail节点更新成尾节点，而是当tail节点和尾节点的距离大于等于常量HOPS的值（默认等于1）时才更新tail节点，tail和尾节点的距离越长使用CAS更新tail节点的次数就会越少，但是距离越长带来的负面效果就是每次入队时定位尾节点的时间就越长，因为循环体需要多循环一次来定位出尾节点，但是这样仍然能提高入队的效率，因为从本质上来看它通过增加对volatile变量的读操作来减少了对volatile变量的写操作，而对volatile变量的写操作开销要远远大于读操作，所以入队效率会有所提升。</p>
+<p>在JDK 1.8的实现中，tail的更新时机是通过p和t是否相等来判断的，其实现结果和JDK 1.7相同，即当tail节点和尾节点的距离大于等于1时，更新tail。</p>
+</blockquote>
+<h3 id="出队">出队</h3>
+<p><figure 
+	>
+	<a href="https://cdn.jsdelivr.net/gh/davyxx3/pics/blog_img20180625144156632" >
+		<img src="https://cdn.jsdelivr.net/gh/davyxx3/pics/blog_img20180625144156632"
+			
+			
+			
+			loading="lazy"
+			alt="出队过程">
+	</a>
+	
+	<figcaption>出队过程</figcaption>
+	
+</figure></p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="kd">public</span> <span class="n">E</span> <span class="nf">poll</span><span class="o">()</span> <span class="o">{</span>
+    <span class="c1">// 循环进行CAS操作
+</span><span class="c1"></span>    <span class="n">restartFromHead</span><span class="o">:</span> <span class="k">for</span> <span class="o">(;;)</span> <span class="o">{</span>
+        <span class="k">for</span> <span class="o">(</span><span class="n">Node</span><span class="o">&lt;</span><span class="n">E</span><span class="o">&gt;</span> <span class="n">h</span> <span class="o">=</span> <span class="n">head</span><span class="o">,</span> <span class="n">p</span> <span class="o">=</span> <span class="n">h</span><span class="o">,</span> <span class="n">q</span><span class="o">;;</span> <span class="n">p</span> <span class="o">=</span> <span class="n">q</span><span class="o">)</span> <span class="o">{</span>
+            <span class="kd">final</span> <span class="n">E</span> <span class="n">item</span><span class="o">;</span>
+            <span class="k">if</span> <span class="o">((</span><span class="n">item</span> <span class="o">=</span> <span class="n">p</span><span class="o">.</span><span class="na">item</span><span class="o">)</span> <span class="o">!=</span> <span class="kc">null</span> <span class="o">&amp;&amp;</span> <span class="n">p</span><span class="o">.</span><span class="na">casItem</span><span class="o">(</span><span class="n">item</span><span class="o">,</span> <span class="kc">null</span><span class="o">))</span> <span class="o">{</span>
+                <span class="c1">// p的item值不为null，说明是有效节点，并使用CAS将p的item置为null
+</span><span class="c1"></span>                <span class="k">if</span> <span class="o">(</span><span class="n">p</span> <span class="o">!=</span> <span class="n">h</span><span class="o">)</span>
+                    <span class="c1">// head的1次更新会跨越2个元素（当head指向的节点中元素为null，才更新head）
+</span><span class="c1"></span>                    <span class="c1">// 更新head的同时，原先的head成为哨兵节点（next指向自己的节点）
+</span><span class="c1"></span>                    <span class="n">updateHead</span><span class="o">(</span><span class="n">h</span><span class="o">,</span> <span class="o">((</span><span class="n">q</span> <span class="o">=</span> <span class="n">p</span><span class="o">.</span><span class="na">next</span><span class="o">)</span> <span class="o">!=</span> <span class="kc">null</span><span class="o">)</span> <span class="o">?</span> <span class="n">q</span> <span class="o">:</span> <span class="n">p</span><span class="o">);</span>
+                <span class="k">return</span> <span class="n">item</span><span class="o">;</span>
+            <span class="o">}</span>
+            <span class="k">else</span> <span class="k">if</span> <span class="o">((</span><span class="n">q</span> <span class="o">=</span> <span class="n">p</span><span class="o">.</span><span class="na">next</span><span class="o">)</span> <span class="o">==</span> <span class="kc">null</span><span class="o">)</span> <span class="o">{</span>
+                <span class="c1">// 链表为空，则更新head，并返回null
+</span><span class="c1"></span>                <span class="n">updateHead</span><span class="o">(</span><span class="n">h</span><span class="o">,</span> <span class="n">p</span><span class="o">);</span>
+                <span class="k">return</span> <span class="kc">null</span><span class="o">;</span>
+            <span class="o">}</span>
+            <span class="k">else</span> <span class="k">if</span> <span class="o">(</span><span class="n">p</span> <span class="o">==</span> <span class="n">q</span><span class="o">)</span>
+                <span class="c1">// 遇到哨兵节点，重新从head开始遍历
+</span><span class="c1"></span>                <span class="k">continue</span> <span class="n">restartFromHead</span><span class="o">;</span>
+        <span class="o">}</span>
+    <span class="o">}</span>
+<span class="o">}</span>
+</code></pre></div><h2 id="总结">总结</h2>
+<ul>
+<li>使用CAS原子指令处理对数据的并发访问</li>
+<li>head和tail并非总是指向队列的头和尾节点，也就是说允许队列处于不一致状态。这个特性把入队、出队时，原本需要一起原子化执行的两个步骤分离开来，缩小了入队、出队时需要原子化更新值的范围到唯一变量，而head和tail的更新使用批处理的方式完成（一次更新2步）。这样的做法减少了入队、出队操作的开销，提高了入队、出队的性能</li>
+<li>因为队列有时会处于不一致状态，所以ConcurrentLinkedQueue 使用三个不变式来维护非阻塞算法的正确性</li>
+</ul>
+
+</section>
+
+
+    <footer class="article-footer">
+    
+    <section class="article-tags">
+        
+            <a href="/tags/java/">Java</a>
+        
+            <a href="/tags/%E5%B9%B6%E5%8F%91/">并发</a>
+        
+            <a href="/tags/%E6%BA%90%E7%A0%81/">源码</a>
+        
+    </section>
+
+
+    
+    <section class="article-copyright">
+        <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-copyright" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="12" cy="12" r="9" />
+  <path d="M14.5 9a3.5 4 0 1 0 0 6" />
+</svg>
+
+
+
+        <span>Licensed under CC BY-NC-SA 4.0</span>
+    </section>
+    </footer>
+
+
+    
+</article>
+
+    <aside class="related-contents--wrapper">
+    
+    
+        <h2 class="section-title">相关文章</h2>
+        <div class="related-contents">
+            <div class="flex article-list--tile">
+                
+                    
+<article class="has-image">
+    <a href="/p/abstract-queued-synchronizer/">
+        
+        
+            <div class="article-image">
+                <img src="/p/abstract-queued-synchronizer/bg.7db24b9288bd166f509a31402056347e_hu3d03a01dcc18bc5be0e67db3d8d209a6_888276_250x150_fill_q75_box_smart1.jpg" 
+                        width="250" 
+                        height="150" 
+                        loading="lazy" 
+                        data-key="abstract-queued-synchronizer" 
+                        data-hash="md5-fbJLkoi9Fm9QmjFAIFY0fg==">
+                
+            </div>
+        
+
+        <div class="article-details">
+            <h2 class="article-title">AbstractQueuedSynchronizer源码探究</h2>
+        </div>
+    </a>
+</article>
+                
+                    
+<article class="has-image">
+    <a href="/p/cyder-map/">
+        
+        
+            <div class="article-image">
+                <img src="/p/cyder-map/bg.6214918ba33543d8ef620010cdf8c38d_hu3d03a01dcc18bc5be0e67db3d8d209a6_4331049_250x150_fill_q75_box_smart1.jpg" 
+                        width="250" 
+                        height="150" 
+                        loading="lazy" 
+                        data-key="cyder-map" 
+                        data-hash="md5-YhSRi6M1Q9jvYgAQzfjDjQ==">
+                
+            </div>
+        
+
+        <div class="article-details">
+            <h2 class="article-title">CyderMap——HHU仿百度地图课设项目</h2>
+        </div>
+    </a>
+</article>
+                
+                    
+<article class="has-image">
+    <a href="/p/redis-data-structure/">
+        
+        
+            <div class="article-image">
+                <img src="/p/redis-data-structure/bg.d571caae2d9536be4d95aa34144be73b_hu3d03a01dcc18bc5be0e67db3d8d209a6_1082539_250x150_fill_q75_box_smart1.jpg" 
+                        width="250" 
+                        height="150" 
+                        loading="lazy" 
+                        data-key="redis-data-structure" 
+                        data-hash="md5-1XHKri2VNr5Nlao0FEvnOw==">
+                
+            </div>
+        
+
+        <div class="article-details">
+            <h2 class="article-title">Redis底层数据结构</h2>
+        </div>
+    </a>
+</article>
+                
+                    
+<article class="has-image">
+    <a href="/p/cache-problem/">
+        
+        
+            <div class="article-image">
+                <img src="/p/cache-problem/bg.322744e286b38ffaf2fea56687a98256_hu4ffaf0220a7db3667523ce786184afe1_220850_250x150_fill_q75_box_smart1.jpeg" 
+                        width="250" 
+                        height="150" 
+                        loading="lazy" 
+                        data-key="cache-problem" 
+                        data-hash="md5-MidE4oazj/ry/qVmh6mCVg==">
+                
+            </div>
+        
+
+        <div class="article-details">
+            <h2 class="article-title">谈谈缓存穿透、击穿和雪崩</h2>
+        </div>
+    </a>
+</article>
+                
+                    
+<article class="has-image">
+    <a href="/p/bloom-filter/">
+        
+        
+            <div class="article-image">
+                <img src="/p/bloom-filter/bg.857b060e24f78ec32a433630366e7202_hu1cee95830531cbd4ff92afca563f6bce_71782_250x150_fill_q75_box_smart1.jpeg" 
+                        width="250" 
+                        height="150" 
+                        loading="lazy" 
+                        data-key="bloom-filter" 
+                        data-hash="md5-hXsGDiT3jsMqQzYwNm5yAg==">
+                
+            </div>
+        
+
+        <div class="article-details">
+            <h2 class="article-title">布隆过滤器的简单总结</h2>
+        </div>
+    </a>
+</article>
+                
+            </div>
+        </div>
+    
+</aside>
+
+     
+    
+        
+    <script src="https://utteranc.es/client.js" 
+        repo="davyxx3/blog_comment"
+        issue-term="pathname"
+        
+        crossorigin="anonymous"
+        async
+        >
+</script>
+
+<style>
+    .utterances {
+        max-width: unset;
+    }
+</style>
+
+<script>
+    function setUtterancesTheme(theme) {
+        let utterances = document.querySelector('.utterances iframe');
+        if (utterances) {
+            utterances.contentWindow.postMessage(
+                {
+                    type: 'set-theme',
+                    theme: `github-${theme}`
+                },
+                'https://utteranc.es'
+            );
+        }
+    }
+
+    addEventListener('message', event => {
+        if (event.origin !== 'https://utteranc.es') return;
+        setUtterancesTheme(document.documentElement.dataset.scheme)
+    });
+
+    window.addEventListener('onColorSchemeChange', (e) => {
+        setUtterancesTheme(e.detail)
+    })
+</script>
+
+
+    
+
+    <footer class="site-footer">
+    <section class="copyright">
+        &copy; 
+        
+            2020 - 
+        
+        2022 CyderX
+    </section>
+    
+    <section class="powerby">
+        Built with <a href="https://gohugo.io/" target="_blank" rel="noopener">Hugo</a> <br />
+        Theme <b><a href="https://github.com/CaiJimmy/hugo-theme-stack" target="_blank" rel="noopener" data-version="3.5.0">Stack</a></b> designed by <a href="https://jimmycai.com" target="_blank" rel="noopener">Jimmy</a>
+    </section>
+</footer>
+
+
+    
+<div class="pswp" tabindex="-1" role="dialog" aria-hidden="true">
+
+    
+    <div class="pswp__bg"></div>
+
+    
+    <div class="pswp__scroll-wrap">
+
+        
+        <div class="pswp__container">
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+        </div>
+
+        
+        <div class="pswp__ui pswp__ui--hidden">
+
+            <div class="pswp__top-bar">
+
+                
+
+                <div class="pswp__counter"></div>
+
+                <button class="pswp__button pswp__button--close" title="Close (Esc)"></button>
+
+                <button class="pswp__button pswp__button--share" title="Share"></button>
+
+                <button class="pswp__button pswp__button--fs" title="Toggle fullscreen"></button>
+
+                <button class="pswp__button pswp__button--zoom" title="Zoom in/out"></button>
+
+                
+                
+                <div class="pswp__preloader">
+                    <div class="pswp__preloader__icn">
+                        <div class="pswp__preloader__cut">
+                            <div class="pswp__preloader__donut"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="pswp__share-modal pswp__share-modal--hidden pswp__single-tap">
+                <div class="pswp__share-tooltip"></div>
+            </div>
+
+            <button class="pswp__button pswp__button--arrow--left" title="Previous (arrow left)">
+            </button>
+
+            <button class="pswp__button pswp__button--arrow--right" title="Next (arrow right)">
+            </button>
+
+            <div class="pswp__caption">
+                <div class="pswp__caption__center"></div>
+            </div>
+
+        </div>
+
+    </div>
+
+</div><script 
+                src="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe.min.js"integrity="sha256-ePwmChbbvXbsO02lbM3HoHbSHTHFAeChekF1xKJdleo="crossorigin="anonymous"
+                defer="true"
+                >
+            </script><script 
+                src="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe-ui-default.min.js"integrity="sha256-UKkzOn/w1mBxRmLLGrSeyB4e1xbrp4xylgAWb3M42pU="crossorigin="anonymous"
+                defer="true"
+                >
+            </script><link 
+                rel="stylesheet" 
+                href="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/default-skin/default-skin.css"integrity="sha256-c0uckgykQ9v5k&#43;IqViZOZKc47Jn7KQil4/MP3ySA3F8="crossorigin="anonymous"
+            ><link 
+                rel="stylesheet" 
+                href="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe.css"integrity="sha256-SBLU4vv6CA6lHsZ1XyTdhyjJxCjPif/TRkjnsyGAGnE="crossorigin="anonymous"
+            >
+
+            </main>
+    
+        <aside class="sidebar right-sidebar sticky">
+            <section class="widget archives">
+                <div class="widget-icon">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-hash" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <line x1="5" y1="9" x2="19" y2="9" />
+  <line x1="5" y1="15" x2="19" y2="15" />
+  <line x1="11" y1="4" x2="7" y2="20" />
+  <line x1="17" y1="4" x2="13" y2="20" />
+</svg>
+
+
+
+                </div>
+                <h2 class="widget-title section-title">目录</h2>
+                
+                <div class="widget--toc">
+                    <nav id="TableOfContents">
+  <ol>
+    <li><a href="#简介">简介</a></li>
+    <li><a href="#原理">原理</a>
+      <ol>
+        <li><a href="#入队">入队</a></li>
+        <li><a href="#出队">出队</a></li>
+      </ol>
+    </li>
+    <li><a href="#总结">总结</a></li>
+  </ol>
+</nav>
+                </div>
+            </section>
+        </aside>
+    
+
+        </div>
+        <script 
+                src="https://cdn.jsdelivr.net/npm/node-vibrant@3.1.5/dist/vibrant.min.js"integrity="sha256-5NovOZc4iwiAWTYIFiIM7DxKUXKWvpVEuMEPLzcm5/g="crossorigin="anonymous"
+                defer="false"
+                >
+            </script><script type="text/javascript" src="/ts/main.js" defer></script>
+<script>
+    (function () {
+        const customFont = document.createElement('link');
+        customFont.href = "https://fonts.googleapis.com/css2?family=Lato:wght@300;400;700&display=swap";
+
+        customFont.type = "text/css";
+        customFont.rel = "stylesheet";
+
+        document.head.appendChild(customFont);
+    }());
+</script>
+
+    </body>
+</html>

@@ -6,13 +6,115 @@
         <description>Recent content on CyderX</description>
         <generator>Hugo -- gohugo.io</generator>
         <language>zh-cn</language>
-        <lastBuildDate>Fri, 31 Dec 2021 00:00:00 +0000</lastBuildDate><atom:link href="https://cyderx.com/index.xml" rel="self" type="application/rss+xml" /><item>
+        <lastBuildDate>Mon, 10 Jan 2022 01:00:00 +0800</lastBuildDate><atom:link href="https://cyderx.com/index.xml" rel="self" type="application/rss+xml" /><item>
+        <title>CyderMap——HHU仿百度地图课设项目</title>
+        <link>https://cyderx.com/p/cyder-map/</link>
+        <pubDate>Mon, 10 Jan 2022 01:00:00 +0800</pubDate>
+        
+        <guid>https://cyderx.com/p/cyder-map/</guid>
+        <description>&lt;img src="https://cyderx.com/p/cyder-map/bg.jpg" alt="Featured image of post CyderMap——HHU仿百度地图课设项目" /&gt;&lt;h2 id=&#34;简介&#34;&gt;简介&lt;/h2&gt;
+&lt;p&gt;大四的最后两周，连续爆肝做了两个课设，加上实验室的活，属实是把我累坏了。&lt;/p&gt;
+&lt;p&gt;想不到我们的电子信息工程专业，竟然还有一个关于Android开发的课设项目，内容简单来讲就是跟着老师做一个简单的地图（使用百度地图的SDK）。老师手把手教学，要求也不高，水的不能再水了。&lt;/p&gt;
+&lt;p&gt;但就是这么水的项目，我还是想把它认真做好的，因此爆肝了一个星期，恶补Android开发知识，总算勉强做出了一个能看的Demo项目。&lt;/p&gt;
+&lt;p&gt;Github地址：&lt;a class=&#34;link&#34; href=&#34;https://github.com/davyxx3/cyder-map&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;cyder-map&lt;/a&gt;&lt;/p&gt;
+&lt;h2 id=&#34;技术栈&#34;&gt;技术栈&lt;/h2&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a class=&#34;link&#34; href=&#34;https://github.com/material-components/material-components-android&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;Material Components&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a class=&#34;link&#34; href=&#34;https://lbsyun.baidu.com/index.php?title=androidsdk&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;百度地图Android SDK&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;简单的&lt;a class=&#34;link&#34; href=&#34;https://www.sqlite.org/index.html&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;SQLite&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2 id=&#34;实现功能&#34;&gt;实现功能&lt;/h2&gt;
+&lt;ul&gt;
+&lt;li&gt;用户登陆与注册&lt;/li&gt;
+&lt;li&gt;地图展示&lt;/li&gt;
+&lt;li&gt;经纬度定位&lt;/li&gt;
+&lt;li&gt;城市定位&lt;/li&gt;
+&lt;li&gt;两点的公里数计算&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2 id=&#34;实现效果&#34;&gt;实现效果&lt;/h2&gt;
+&lt;p&gt;&lt;figure 
+	&gt;
+	&lt;a href=&#34;https://cdn.jsdelivr.net/gh/davyxx3/pics/blog_img/Shell_20211231-180819-098.png&#34; &gt;
+		&lt;img src=&#34;https://cdn.jsdelivr.net/gh/davyxx3/pics/blog_img/Shell_20211231-180819-098.png&#34;
+			
+			
+			
+			loading=&#34;lazy&#34;
+			alt=&#34;用户登陆界面&#34;&gt;
+	&lt;/a&gt;
+	
+	&lt;figcaption&gt;用户登陆界面&lt;/figcaption&gt;
+	
+&lt;/figure&gt;&lt;/p&gt;
+&lt;p&gt;&lt;figure 
+	&gt;
+	&lt;a href=&#34;https://cdn.jsdelivr.net/gh/davyxx3/pics/blog_img/Shell_20211231-180843-022.png&#34; &gt;
+		&lt;img src=&#34;https://cdn.jsdelivr.net/gh/davyxx3/pics/blog_img/Shell_20211231-180843-022.png&#34;
+			
+			
+			
+			loading=&#34;lazy&#34;
+			alt=&#34;用户注册界面&#34;&gt;
+	&lt;/a&gt;
+	
+	&lt;figcaption&gt;用户注册界面&lt;/figcaption&gt;
+	
+&lt;/figure&gt;&lt;/p&gt;
+&lt;p&gt;&lt;figure 
+	&gt;
+	&lt;a href=&#34;https://cdn.jsdelivr.net/gh/davyxx3/pics/blog_img/Shell_20211231-181031-711.png&#34; &gt;
+		&lt;img src=&#34;https://cdn.jsdelivr.net/gh/davyxx3/pics/blog_img/Shell_20211231-181031-711.png&#34;
+			
+			
+			
+			loading=&#34;lazy&#34;
+			alt=&#34;地图显示界面&#34;&gt;
+	&lt;/a&gt;
+	
+	&lt;figcaption&gt;地图显示界面&lt;/figcaption&gt;
+	
+&lt;/figure&gt;&lt;/p&gt;
+&lt;p&gt;&lt;figure 
+	&gt;
+	&lt;a href=&#34;https://cdn.jsdelivr.net/gh/davyxx3/pics/blog_img/Shell_20211231-181118-277.png&#34; &gt;
+		&lt;img src=&#34;https://cdn.jsdelivr.net/gh/davyxx3/pics/blog_img/Shell_20211231-181118-277.png&#34;
+			
+			
+			
+			loading=&#34;lazy&#34;
+			alt=&#34;城市定位功能&#34;&gt;
+	&lt;/a&gt;
+	
+	&lt;figcaption&gt;城市定位功能&lt;/figcaption&gt;
+	
+&lt;/figure&gt;&lt;/p&gt;
+&lt;p&gt;&lt;figure 
+	&gt;
+	&lt;a href=&#34;https://cdn.jsdelivr.net/gh/davyxx3/pics/blog_img/Shell_20211231-181139-885.png&#34; &gt;
+		&lt;img src=&#34;https://cdn.jsdelivr.net/gh/davyxx3/pics/blog_img/Shell_20211231-181139-885.png&#34;
+			
+			
+			
+			loading=&#34;lazy&#34;
+			alt=&#34;经纬度定位功能&#34;&gt;
+	&lt;/a&gt;
+	
+	&lt;figcaption&gt;经纬度定位功能&lt;/figcaption&gt;
+	
+&lt;/figure&gt;&lt;/p&gt;
+</description>
+        </item>
+        <item>
         <title>Redis底层数据结构</title>
-        <link>https://cyderx.com/p/redis%E5%BA%95%E5%B1%82%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/</link>
+        <link>https://cyderx.com/p/redis-data-structure/</link>
         <pubDate>Mon, 06 Dec 2021 01:00:00 +0800</pubDate>
         
-        <guid>https://cyderx.com/p/redis%E5%BA%95%E5%B1%82%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/</guid>
-        <description>&lt;img src="https://cyderx.com/p/redis%E5%BA%95%E5%B1%82%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/bg.jpg" alt="Featured image of post Redis底层数据结构" /&gt;&lt;p&gt;先挖个坑，还没更完，有时间再补充完整 :)&lt;/p&gt;
+        <guid>https://cyderx.com/p/redis-data-structure/</guid>
+        <description>&lt;img src="https://cyderx.com/p/redis-data-structure/bg.jpg" alt="Featured image of post Redis底层数据结构" /&gt;&lt;p&gt;先挖个坑，还没更完，有时间再补充完整 :)&lt;/p&gt;
 &lt;h2 id=&#34;底层数据结构&#34;&gt;底层数据结构&lt;/h2&gt;
 &lt;h3 id=&#34;sds&#34;&gt;SDS&lt;/h3&gt;
 &lt;p&gt;简单动态字符串（Simple Dynamic String）&lt;/p&gt;
@@ -400,11 +502,11 @@
         </item>
         <item>
         <title>AbstractQueuedSynchronizer源码探究</title>
-        <link>https://cyderx.com/p/abstractqueuedsynchronizer%E6%BA%90%E7%A0%81%E6%8E%A2%E7%A9%B6/</link>
+        <link>https://cyderx.com/p/abstract-queued-synchronizer/</link>
         <pubDate>Tue, 30 Nov 2021 01:00:00 +0800</pubDate>
         
-        <guid>https://cyderx.com/p/abstractqueuedsynchronizer%E6%BA%90%E7%A0%81%E6%8E%A2%E7%A9%B6/</guid>
-        <description>&lt;img src="https://cyderx.com/p/abstractqueuedsynchronizer%E6%BA%90%E7%A0%81%E6%8E%A2%E7%A9%B6/bg.jpg" alt="Featured image of post AbstractQueuedSynchronizer源码探究" /&gt;&lt;h2 id=&#34;aqs概念&#34;&gt;AQS概念&lt;/h2&gt;
+        <guid>https://cyderx.com/p/abstract-queued-synchronizer/</guid>
+        <description>&lt;img src="https://cyderx.com/p/abstract-queued-synchronizer/bg.jpg" alt="Featured image of post AbstractQueuedSynchronizer源码探究" /&gt;&lt;h2 id=&#34;aqs概念&#34;&gt;AQS概念&lt;/h2&gt;
 &lt;p&gt;AbstractQueuedSynchronizer是JUC中非常重要的一个同步控制工具&lt;/p&gt;
 &lt;p&gt;在JDK的并发包中，我们能看到很多很多的同步器类，比如ReentrantLock（可重入锁）、Semaphore（信号量）和CountDownLatch（倒计时闭锁）等等&lt;/p&gt;
 &lt;p&gt;在这些类中，都使用了AbstractQueuedSynchronizer（AQS）来构建&lt;/p&gt;
@@ -788,11 +890,11 @@
         </item>
         <item>
         <title>谈谈缓存穿透、击穿和雪崩</title>
-        <link>https://cyderx.com/p/%E8%B0%88%E8%B0%88%E7%BC%93%E5%AD%98%E7%A9%BF%E9%80%8F%E5%87%BB%E7%A9%BF%E5%92%8C%E9%9B%AA%E5%B4%A9/</link>
+        <link>https://cyderx.com/p/cache-problem/</link>
         <pubDate>Fri, 26 Nov 2021 10:00:00 +0800</pubDate>
         
-        <guid>https://cyderx.com/p/%E8%B0%88%E8%B0%88%E7%BC%93%E5%AD%98%E7%A9%BF%E9%80%8F%E5%87%BB%E7%A9%BF%E5%92%8C%E9%9B%AA%E5%B4%A9/</guid>
-        <description>&lt;img src="https://cyderx.com/p/%E8%B0%88%E8%B0%88%E7%BC%93%E5%AD%98%E7%A9%BF%E9%80%8F%E5%87%BB%E7%A9%BF%E5%92%8C%E9%9B%AA%E5%B4%A9/bg.jpeg" alt="Featured image of post 谈谈缓存穿透、击穿和雪崩" /&gt;&lt;h2 id=&#34;缓存概览&#34;&gt;缓存概览&lt;/h2&gt;
+        <guid>https://cyderx.com/p/cache-problem/</guid>
+        <description>&lt;img src="https://cyderx.com/p/cache-problem/bg.jpeg" alt="Featured image of post 谈谈缓存穿透、击穿和雪崩" /&gt;&lt;h2 id=&#34;缓存概览&#34;&gt;缓存概览&lt;/h2&gt;
 &lt;p&gt;缓存的收益：&lt;/p&gt;
 &lt;ul&gt;
 &lt;li&gt;加速读写，优化用户体验&lt;/li&gt;
@@ -956,11 +1058,11 @@
         </item>
         <item>
         <title>布隆过滤器的简单总结</title>
-        <link>https://cyderx.com/p/%E5%B8%83%E9%9A%86%E8%BF%87%E6%BB%A4%E5%99%A8%E7%9A%84%E7%AE%80%E5%8D%95%E6%80%BB%E7%BB%93/</link>
+        <link>https://cyderx.com/p/bloom-filter/</link>
         <pubDate>Fri, 26 Nov 2021 08:00:00 +0800</pubDate>
         
-        <guid>https://cyderx.com/p/%E5%B8%83%E9%9A%86%E8%BF%87%E6%BB%A4%E5%99%A8%E7%9A%84%E7%AE%80%E5%8D%95%E6%80%BB%E7%BB%93/</guid>
-        <description>&lt;img src="https://cyderx.com/p/%E5%B8%83%E9%9A%86%E8%BF%87%E6%BB%A4%E5%99%A8%E7%9A%84%E7%AE%80%E5%8D%95%E6%80%BB%E7%BB%93/bg.jpeg" alt="Featured image of post 布隆过滤器的简单总结" /&gt;&lt;p&gt;布隆过滤器（Bloom Filter）是一个很长的二进制向量和一系列随机映射函数&lt;/p&gt;
+        <guid>https://cyderx.com/p/bloom-filter/</guid>
+        <description>&lt;img src="https://cyderx.com/p/bloom-filter/bg.jpeg" alt="Featured image of post 布隆过滤器的简单总结" /&gt;&lt;p&gt;布隆过滤器（Bloom Filter）是一个很长的二进制向量和一系列随机映射函数&lt;/p&gt;
 &lt;p&gt;&lt;strong&gt;用途：判断一个元素是否在一个集合中&lt;/strong&gt;&lt;/p&gt;
 &lt;p&gt;严谨来说，应该是：判断某样东西一定不存在或可能存在&lt;/p&gt;
 &lt;h2 id=&#34;数据存入&#34;&gt;数据存入&lt;/h2&gt;
@@ -1040,11 +1142,11 @@
         </item>
         <item>
         <title>ConcurrentLinkedQueue源码分析</title>
-        <link>https://cyderx.com/p/concurrentlinkedqueue%E6%BA%90%E7%A0%81%E5%88%86%E6%9E%90/</link>
+        <link>https://cyderx.com/p/concurrent-linked-queue/</link>
         <pubDate>Fri, 26 Nov 2021 01:00:00 +0800</pubDate>
         
-        <guid>https://cyderx.com/p/concurrentlinkedqueue%E6%BA%90%E7%A0%81%E5%88%86%E6%9E%90/</guid>
-        <description>&lt;img src="https://cyderx.com/p/concurrentlinkedqueue%E6%BA%90%E7%A0%81%E5%88%86%E6%9E%90/CLQ.jpg" alt="Featured image of post ConcurrentLinkedQueue源码分析" /&gt;&lt;h2 id=&#34;简介&#34;&gt;简介&lt;/h2&gt;
+        <guid>https://cyderx.com/p/concurrent-linked-queue/</guid>
+        <description>&lt;img src="https://cyderx.com/p/concurrent-linked-queue/CLQ.jpg" alt="Featured image of post ConcurrentLinkedQueue源码分析" /&gt;&lt;h2 id=&#34;简介&#34;&gt;简介&lt;/h2&gt;
 &lt;p&gt;ConcurrentLinkedQueue是高并发环境中性能最好的队列&lt;/p&gt;
 &lt;p&gt;要想队列保证线程安全，有两种实现方式&lt;/p&gt;
 &lt;ul&gt;

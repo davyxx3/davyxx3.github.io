@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Android on CyderX</title>
+    <link>https://cyderx.com/tags/android/</link>
+    <description>Recent content in Android on CyderX</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>zh-cn</language>
+    <lastBuildDate>Mon, 10 Jan 2022 01:00:00 +0800</lastBuildDate><atom:link href="https://cyderx.com/tags/android/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>CyderMap——HHU仿百度地图课设项目</title>
+      <link>https://cyderx.com/p/cyder-map/</link>
+      <pubDate>Mon, 10 Jan 2022 01:00:00 +0800</pubDate>
+      
+      <guid>https://cyderx.com/p/cyder-map/</guid>
+      <description>简介 大四的最后两周，连续爆肝做了两个课设，加上实验室的活，属实是把我累坏了。 想不到我们的电子信息工程专业，竟然还有一个关于Android开发</description>
+    </item>
+    
+  </channel>
+</rss>

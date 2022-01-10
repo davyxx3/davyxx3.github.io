@@ -6,7 +6,25 @@
     <description>Recent content in Tags on CyderX</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>zh-cn</language>
-    <lastBuildDate>Mon, 06 Dec 2021 01:00:00 +0800</lastBuildDate><atom:link href="https://cyderx.com/tags/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Mon, 10 Jan 2022 01:00:00 +0800</lastBuildDate><atom:link href="https://cyderx.com/tags/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Android</title>
+      <link>https://cyderx.com/tags/android/</link>
+      <pubDate>Mon, 10 Jan 2022 01:00:00 +0800</pubDate>
+      
+      <guid>https://cyderx.com/tags/android/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Java</title>
+      <link>https://cyderx.com/tags/java/</link>
+      <pubDate>Mon, 10 Jan 2022 01:00:00 +0800</pubDate>
+      
+      <guid>https://cyderx.com/tags/java/</guid>
+      <description></description>
+    </item>
+    
     <item>
       <title>数据库</title>
       <link>https://cyderx.com/tags/%E6%95%B0%E6%8D%AE%E5%BA%93/</link>
@@ -22,15 +40,6 @@
       <pubDate>Mon, 06 Dec 2021 01:00:00 +0800</pubDate>
       
       <guid>https://cyderx.com/tags/%E7%BC%93%E5%AD%98/</guid>
-      <description></description>
-    </item>
-    
-    <item>
-      <title>Java</title>
-      <link>https://cyderx.com/tags/java/</link>
-      <pubDate>Tue, 30 Nov 2021 01:00:00 +0800</pubDate>
-      
-      <guid>https://cyderx.com/tags/java/</guid>
       <description></description>
     </item>
     
