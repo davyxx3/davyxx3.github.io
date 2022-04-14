@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Lab on CyderX</title>
+    <link>https://cyderx.com/tags/lab/</link>
+    <description>Recent content in Lab on CyderX</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>zh-cn</language>
+    <lastBuildDate>Thu, 14 Apr 2022 20:00:00 +0800</lastBuildDate><atom:link href="https://cyderx.com/tags/lab/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>MIT 6.S081 Lab 1</title>
+      <link>https://cyderx.com/p/mit-6.s081-lab-1/</link>
+      <pubDate>Thu, 14 Apr 2022 20:00:00 +0800</pubDate>
+      
+      <guid>https://cyderx.com/p/mit-6.s081-lab-1/</guid>
+      <description>简介 最近一段时间，除了毕设就没有别的什么事情了，于是开始看起了鼎鼎大名的MIT（麻省理工学院）6.S081操作系统课程（实际是三天打鱼两天晒</description>
+    </item>
+    
+  </channel>
+</rss>

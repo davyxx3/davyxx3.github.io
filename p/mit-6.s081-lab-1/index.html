@@ -1,0 +1,792 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+    <head><meta charset='utf-8'>
+<meta name='viewport' content='width=device-width, initial-scale=1'><meta name='description' content='MIT 6.S081操作系统课程配套实验——Lab 1'><title>MIT 6.S081 Lab 1</title>
+
+<link rel='canonical' href='https://cyderx.com/p/mit-6.s081-lab-1/'>
+
+<link rel="stylesheet" href="/scss/style.min.css"><meta property='og:title' content='MIT 6.S081 Lab 1'>
+<meta property='og:description' content='MIT 6.S081操作系统课程配套实验——Lab 1'>
+<meta property='og:url' content='https://cyderx.com/p/mit-6.s081-lab-1/'>
+<meta property='og:site_name' content='CyderX'>
+<meta property='og:type' content='article'><meta property='article:section' content='Post' /><meta property='article:tag' content='计算机基础' /><meta property='article:tag' content='操作系统' /><meta property='article:tag' content='Lab' /><meta property='article:published_time' content='2022-04-14T20:00:00&#43;08:00'/><meta property='article:modified_time' content='2022-04-14T20:00:00&#43;08:00'/><meta property='og:image' content='https://cyderx.com/p/mit-6.s081-lab-1/bg.jpg' />
+<meta name="twitter:site" content="@davyxx3">
+    <meta name="twitter:creator" content="@davyxx3"><meta name="twitter:title" content="MIT 6.S081 Lab 1">
+<meta name="twitter:description" content="MIT 6.S081操作系统课程配套实验——Lab 1"><meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:image" content='https://cyderx.com/p/mit-6.s081-lab-1/bg.jpg' />
+    <link rel="shortcut icon" href="/favicon.ico" />
+<style>
+  :root {
+    --article-font-family: "Open Sans", "Noto Serif SC", var(--base-font-family);
+  }
+</style>
+
+<script>
+  (function () {
+    const customFont = document.createElement("link");
+    customFont.href =
+      "https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@400;700&display=swap";
+
+    customFont.type = "text/css";
+    customFont.rel = "stylesheet";
+
+    document.head.appendChild(customFont);
+  })();
+  (function () {
+    const customFont = document.createElement("link");
+    customFont.href =
+      "https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;700&display=swap";
+
+    customFont.type = "text/css";
+    customFont.rel = "stylesheet";
+
+    document.head.appendChild(customFont);
+  })();
+</script>
+
+    </head>
+    <body class="
+    article-page has-toc
+">
+    <script>
+        (function() {
+            const colorSchemeKey = 'StackColorScheme';
+            if(!localStorage.getItem(colorSchemeKey)){
+                localStorage.setItem(colorSchemeKey, "auto");
+            }
+        })();
+    </script><script>
+    (function() {
+        const colorSchemeKey = 'StackColorScheme';
+        const colorSchemeItem = localStorage.getItem(colorSchemeKey);
+        const supportDarkMode = window.matchMedia('(prefers-color-scheme: dark)').matches === true;
+
+        if (colorSchemeItem == 'dark' || colorSchemeItem === 'auto' && supportDarkMode) {
+            
+
+            document.documentElement.dataset.scheme = 'dark';
+        } else {
+            document.documentElement.dataset.scheme = 'light';
+        }
+    })();
+</script>
+<div class="container main-container flex 
+    
+        extended
+    
+">
+    
+        <div id="article-toolbar">
+            <a href="/" class="back-home">
+                <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-chevron-left" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <polyline points="15 6 9 12 15 18" />
+</svg>
+
+
+
+                <span>返回</span>
+            </a>
+        </div>
+    
+<main class="main full-width">
+    <article class="has-image main-article">
+    <header class="article-header">
+        <div class="article-image">
+            <a href="/p/mit-6.s081-lab-1/">
+                <img src="/p/mit-6.s081-lab-1/bg_hu3d03a01dcc18bc5be0e67db3d8d209a6_616308_800x0_resize_q75_box.jpg"
+                        srcset="/p/mit-6.s081-lab-1/bg_hu3d03a01dcc18bc5be0e67db3d8d209a6_616308_800x0_resize_q75_box.jpg 800w, /p/mit-6.s081-lab-1/bg_hu3d03a01dcc18bc5be0e67db3d8d209a6_616308_1600x0_resize_q75_box.jpg 1600w"
+                        width="800" 
+                        height="533" 
+                        loading="lazy"
+                        alt="Featured image of post MIT 6.S081 Lab 1" />
+                
+            </a>
+        </div>
+    
+
+    <div class="article-details">
+    
+    <header class="article-category">
+        
+            <a href="/categories/%E5%BC%80%E5%8F%91/" >
+                开发
+            </a>
+        
+    </header>
+    
+
+    <h2 class="article-title">
+        <a href="/p/mit-6.s081-lab-1/">MIT 6.S081 Lab 1</a>
+    </h2>
+
+    
+    <h3 class="article-subtitle">
+        MIT 6.S081操作系统课程配套实验——Lab 1
+    </h3>
+    
+
+    
+    <footer class="article-time">
+        
+            <div>
+                <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-calendar-time" width="56" height="56" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <path d="M11.795 21h-6.795a2 2 0 0 1 -2 -2v-12a2 2 0 0 1 2 -2h12a2 2 0 0 1 2 2v4" />
+  <circle cx="18" cy="18" r="4" />
+  <path d="M15 3v4" />
+  <path d="M7 3v4" />
+  <path d="M3 11h16" />
+  <path d="M18 16.496v1.504l1 1" />
+</svg>
+                <time class="article-time--published">Apr 14, 2022</time>
+            </div>
+        
+
+        
+            <div>
+                <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-clock" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="12" cy="12" r="9" />
+  <polyline points="12 7 12 12 15 15" />
+</svg>
+
+
+
+                <time class="article-time--reading">
+                    阅读时长: 4 分钟
+                </time>
+            </div>
+        
+    </footer>
+    
+</div>
+</header>
+
+    <section class="article-content">
+    <h2 id="简介">简介</h2>
+<p>最近一段时间，除了毕设就没有别的什么事情了，于是开始看起了鼎鼎大名的MIT（麻省理工学院）6.S081操作系统课程（实际是三天打鱼两天晒网&hellip;之前沉迷于战地1无法自拔）</p>
+<p>对于操作系统这门课程，我之前只是自己看书自学了一遍，有很多知识都是一知半解，并没有深入了解其中的原理。这次也算是用这个课程来恶补一下我的基础吧。感谢MIT网课的两位教授，从课堂中我学到了很多很多东西，虽然网课总共只看了1/3，但也可以称得上受益匪浅了。</p>
+<h2 id="环境配置">环境配置</h2>
+<blockquote>
+<p>本人的配置：Ubuntu 20.04 WSL2</p>
+</blockquote>
+<p>根据<a class="link" href="https://pdos.csail.mit.edu/6.828/2020/tools.html"  target="_blank" rel="noopener"
+    >官网上的教程</a>配置即可</p>
+<p>注意开启GDB的方式可能和网课上讲的不太一样，查阅资料后发现步骤应该是：</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="c1"># 在xv6文件夹中</span>
+gdb-multiarch kernel/kernel
+<span class="c1"># 进入GDB后</span>
+<span class="nb">set</span> architecture riscv:rv64
+target remote localhost:26000
+</code></pre></div><h2 id="代码详解">代码详解</h2>
+<p>这个实验相对还是比较简单的，主要是起了热身的作用吧。除了prime，其他任务都很快就完成了。</p>
+<h3 id="sleep">sleep</h3>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="c1">// user/sleep.c
+</span><span class="c1"></span>
+<span class="kt">void</span> <span class="nf">Error_Handler</span><span class="p">()</span>
+<span class="p">{</span>
+    <span class="n">fprintf</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="s">&#34;Usage: sleep [time]</span><span class="se">\n</span><span class="s">&#34;</span><span class="p">);</span>
+    <span class="n">exit</span><span class="p">(</span><span class="mi">1</span><span class="p">);</span>
+<span class="p">}</span>
+
+<span class="kt">int</span> <span class="nf">main</span><span class="p">(</span><span class="kt">int</span> <span class="n">argc</span><span class="p">,</span> <span class="kt">char</span> <span class="k">const</span> <span class="o">*</span><span class="n">argv</span><span class="p">[])</span>
+<span class="p">{</span>
+    <span class="k">if</span> <span class="p">(</span><span class="n">argc</span> <span class="o">!=</span> <span class="mi">2</span><span class="p">)</span>
+    <span class="p">{</span>
+        <span class="n">Error_Handler</span><span class="p">();</span>
+    <span class="p">}</span>
+    <span class="kt">int</span> <span class="n">time</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+    <span class="k">if</span> <span class="p">((</span><span class="n">time</span> <span class="o">=</span> <span class="n">atoi</span><span class="p">(</span><span class="n">argv</span><span class="p">[</span><span class="mi">1</span><span class="p">]))</span> <span class="o">==</span> <span class="mi">0</span><span class="p">)</span>
+    <span class="p">{</span>
+        <span class="n">Error_Handler</span><span class="p">();</span>
+    <span class="p">}</span>
+    <span class="n">sleep</span><span class="p">(</span><span class="n">time</span><span class="p">);</span>
+    <span class="n">exit</span><span class="p">(</span><span class="mi">0</span><span class="p">);</span>
+<span class="p">}</span>
+</code></pre></div><h3 id="pingpong">pingpong</h3>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="c1">// user/pingpong.c
+</span><span class="c1"></span>
+<span class="cp">#include</span> <span class="cpf">&#34;kernel/types.h&#34;</span><span class="cp">
+</span><span class="cp">#include</span> <span class="cpf">&#34;user/user.h&#34;</span><span class="cp">
+</span><span class="cp">#include</span> <span class="cpf">&#34;kernel/fcntl.h&#34;</span><span class="cp">
+</span><span class="cp"></span>
+<span class="kt">int</span> <span class="nf">main</span><span class="p">()</span>
+<span class="p">{</span>
+    <span class="kt">int</span> <span class="n">p</span><span class="p">[</span><span class="mi">2</span><span class="p">];</span>
+    <span class="n">pipe</span><span class="p">(</span><span class="n">p</span><span class="p">);</span>
+
+    <span class="k">if</span> <span class="p">(</span><span class="n">fork</span><span class="p">()</span> <span class="o">==</span> <span class="mi">0</span><span class="p">)</span>
+    <span class="p">{</span>
+        <span class="n">close</span><span class="p">(</span><span class="n">p</span><span class="p">[</span><span class="mi">1</span><span class="p">]);</span>
+        <span class="kt">char</span> <span class="n">buf</span><span class="p">[</span><span class="mi">5</span><span class="p">];</span>
+        <span class="n">read</span><span class="p">(</span><span class="n">p</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">buf</span><span class="p">,</span> <span class="mi">4</span><span class="p">);</span>
+        <span class="n">fprintf</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="s">&#34;%d: received ping</span><span class="se">\n</span><span class="s">&#34;</span><span class="p">,</span> <span class="n">getpid</span><span class="p">());</span>
+        <span class="n">close</span><span class="p">(</span><span class="n">p</span><span class="p">[</span><span class="mi">0</span><span class="p">]);</span>
+        <span class="n">exit</span><span class="p">(</span><span class="mi">0</span><span class="p">);</span>
+    <span class="p">}</span>
+    <span class="k">else</span>
+    <span class="p">{</span>
+        <span class="n">close</span><span class="p">(</span><span class="n">p</span><span class="p">[</span><span class="mi">0</span><span class="p">]);</span>
+        <span class="n">write</span><span class="p">(</span><span class="n">p</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="s">&#34;test&#34;</span><span class="p">,</span> <span class="mi">4</span><span class="p">);</span>
+        <span class="n">close</span><span class="p">(</span><span class="n">p</span><span class="p">[</span><span class="mi">1</span><span class="p">]);</span>
+        <span class="n">wait</span><span class="p">(</span><span class="mi">0</span><span class="p">);</span>
+        <span class="n">fprintf</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="s">&#34;%d: received pong</span><span class="se">\n</span><span class="s">&#34;</span><span class="p">,</span> <span class="n">getpid</span><span class="p">());</span>
+        <span class="n">exit</span><span class="p">(</span><span class="mi">0</span><span class="p">);</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div><p>前面两个都没什么好说的&hellip;</p>
+<h3 id="primes">primes</h3>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="cp">#include</span> <span class="cpf">&#34;kernel/types.h&#34;</span><span class="cp">
+</span><span class="cp">#include</span> <span class="cpf">&#34;user/user.h&#34;</span><span class="cp">
+</span><span class="cp">#include</span> <span class="cpf">&#34;kernel/fcntl.h&#34;</span><span class="cp">
+</span><span class="cp"></span>
+<span class="kt">int</span> <span class="n">primes</span><span class="p">[</span><span class="mi">11</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span><span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">7</span><span class="p">,</span> <span class="mi">11</span><span class="p">,</span> <span class="mi">13</span><span class="p">,</span> <span class="mi">17</span><span class="p">,</span> <span class="mi">19</span><span class="p">,</span> <span class="mi">23</span><span class="p">,</span> <span class="mi">29</span><span class="p">,</span> <span class="mi">31</span><span class="p">};</span>
+
+<span class="kt">void</span> <span class="nf">prime_sieve</span><span class="p">(</span><span class="kt">int</span> <span class="o">*</span><span class="n">data_pipe</span><span class="p">,</span> <span class="kt">int</span> <span class="n">n</span><span class="p">)</span>
+<span class="p">{</span>
+    <span class="c1">// 注意此处一定要关闭前管道的写端，不然会无法退出子进程！
+</span><span class="c1"></span>    <span class="n">close</span><span class="p">(</span><span class="n">data_pipe</span><span class="p">[</span><span class="mi">1</span><span class="p">]);</span>
+    <span class="k">if</span> <span class="p">(</span><span class="n">n</span> <span class="o">&gt;</span> <span class="mi">10</span><span class="p">)</span>
+    <span class="p">{</span>
+        <span class="n">exit</span><span class="p">(</span><span class="mi">0</span><span class="p">);</span>
+    <span class="p">}</span>
+
+    <span class="kt">int</span> <span class="n">inner_p</span><span class="p">[</span><span class="mi">2</span><span class="p">];</span>
+    <span class="n">pipe</span><span class="p">(</span><span class="n">inner_p</span><span class="p">);</span>
+
+    <span class="k">if</span> <span class="p">(</span><span class="n">fork</span><span class="p">()</span> <span class="o">==</span> <span class="mi">0</span><span class="p">)</span>
+    <span class="p">{</span>
+        <span class="n">prime_sieve</span><span class="p">(</span><span class="n">inner_p</span><span class="p">,</span> <span class="n">n</span> <span class="o">+</span> <span class="mi">1</span><span class="p">);</span>
+    <span class="p">}</span>
+    <span class="k">else</span>
+    <span class="p">{</span>
+
+        <span class="n">close</span><span class="p">(</span><span class="n">inner_p</span><span class="p">[</span><span class="mi">0</span><span class="p">]);</span>
+        <span class="kt">int</span> <span class="n">num</span><span class="p">;</span>
+        <span class="n">read</span><span class="p">(</span><span class="n">data_pipe</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="o">&amp;</span><span class="n">num</span><span class="p">,</span> <span class="mi">4</span><span class="p">);</span>
+        <span class="n">printf</span><span class="p">(</span><span class="s">&#34;prime %d</span><span class="se">\n</span><span class="s">&#34;</span><span class="p">,</span> <span class="n">num</span><span class="p">);</span>
+        <span class="k">while</span> <span class="p">(</span><span class="n">read</span><span class="p">(</span><span class="n">data_pipe</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="o">&amp;</span><span class="n">num</span><span class="p">,</span> <span class="mi">4</span><span class="p">)</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">)</span>
+        <span class="p">{</span>
+            <span class="k">if</span> <span class="p">(</span><span class="n">num</span> <span class="o">%</span> <span class="n">primes</span><span class="p">[</span><span class="n">n</span><span class="p">]</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">)</span>
+            <span class="p">{</span>
+                <span class="n">write</span><span class="p">(</span><span class="n">inner_p</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="o">&amp;</span><span class="n">num</span><span class="p">,</span> <span class="mi">4</span><span class="p">);</span>
+            <span class="p">}</span>
+        <span class="p">}</span>
+        <span class="n">close</span><span class="p">(</span><span class="n">data_pipe</span><span class="p">[</span><span class="mi">0</span><span class="p">]);</span>
+        <span class="n">close</span><span class="p">(</span><span class="n">inner_p</span><span class="p">[</span><span class="mi">1</span><span class="p">]);</span>
+        <span class="n">wait</span><span class="p">(</span><span class="mi">0</span><span class="p">);</span>
+        <span class="n">exit</span><span class="p">(</span><span class="mi">0</span><span class="p">);</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+
+<span class="kt">int</span> <span class="nf">main</span><span class="p">()</span>
+<span class="p">{</span>
+    <span class="kt">int</span> <span class="n">p</span><span class="p">[</span><span class="mi">2</span><span class="p">];</span>
+    <span class="n">pipe</span><span class="p">(</span><span class="n">p</span><span class="p">);</span>
+    <span class="k">if</span> <span class="p">(</span><span class="n">fork</span><span class="p">()</span> <span class="o">==</span> <span class="mi">0</span><span class="p">)</span>
+    <span class="p">{</span>
+        <span class="n">prime_sieve</span><span class="p">(</span><span class="n">p</span><span class="p">,</span> <span class="mi">0</span><span class="p">);</span>
+    <span class="p">}</span>
+    <span class="k">else</span>
+    <span class="p">{</span>
+        <span class="n">close</span><span class="p">(</span><span class="n">p</span><span class="p">[</span><span class="mi">0</span><span class="p">]);</span>
+        <span class="kt">int</span> <span class="n">i</span><span class="p">;</span>
+        <span class="k">for</span> <span class="p">(</span><span class="n">i</span> <span class="o">=</span> <span class="mi">2</span><span class="p">;</span> <span class="n">i</span> <span class="o">&lt;=</span> <span class="mi">35</span><span class="p">;</span> <span class="n">i</span><span class="o">++</span><span class="p">)</span>
+        <span class="p">{</span>
+            <span class="n">write</span><span class="p">(</span><span class="n">p</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="o">&amp;</span><span class="n">i</span><span class="p">,</span> <span class="mi">4</span><span class="p">);</span>
+        <span class="p">}</span>
+        <span class="n">close</span><span class="p">(</span><span class="n">p</span><span class="p">[</span><span class="mi">1</span><span class="p">]);</span>
+        <span class="n">wait</span><span class="p">(</span><span class="mi">0</span><span class="p">);</span>
+    <span class="p">}</span>
+    <span class="n">exit</span><span class="p">(</span><span class="mi">0</span><span class="p">);</span>
+<span class="p">}</span>
+</code></pre></div><p>这个task还是有点难度的，想出解决的思路不难，但很容易出bug，光debug就花了我三四个小时&hellip;</p>
+<p>大坑是在创建子进程后，必须先把之前管道的写端给关掉，如果不关掉的话，后面继续fork子进程时，会把之前残留的这个管道写端又复制到子进程，导致子进程会有多个写端，则子进程会不断地等待写入，造成死循环，所有子进程都无法正确关闭。</p>
+<p>这个bug隐藏地太深，也许也是我技术太菜的原因，我花了非常多的时间才发现了这个bug，不得不说是个大坑</p>
+<h3 id="find">find</h3>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="cp">#include</span> <span class="cpf">&#34;kernel/types.h&#34;</span><span class="cp">
+</span><span class="cp">#include</span> <span class="cpf">&#34;kernel/stat.h&#34;</span><span class="cp">
+</span><span class="cp">#include</span> <span class="cpf">&#34;user/user.h&#34;</span><span class="cp">
+</span><span class="cp">#include</span> <span class="cpf">&#34;kernel/fs.h&#34;</span><span class="cp">
+</span><span class="cp"></span>
+<span class="kt">void</span> <span class="nf">find</span><span class="p">(</span><span class="kt">char</span> <span class="o">*</span><span class="n">path</span><span class="p">,</span> <span class="kt">char</span> <span class="o">*</span><span class="n">name</span><span class="p">)</span>
+<span class="p">{</span>
+    <span class="kt">int</span> <span class="n">fd</span><span class="p">;</span>
+    <span class="k">struct</span> <span class="n">stat</span> <span class="n">st</span><span class="p">;</span>
+    <span class="k">struct</span> <span class="n">dirent</span> <span class="n">de</span><span class="p">;</span>
+    <span class="kt">char</span> <span class="n">buf</span><span class="p">[</span><span class="mi">512</span><span class="p">],</span> <span class="o">*</span><span class="n">p</span><span class="p">;</span>
+    <span class="k">if</span> <span class="p">((</span><span class="n">fd</span> <span class="o">=</span> <span class="n">open</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="mi">0</span><span class="p">))</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">)</span>
+    <span class="p">{</span>
+        <span class="n">fprintf</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="s">&#34;find: cannot open %s</span><span class="se">\n</span><span class="s">&#34;</span><span class="p">,</span> <span class="n">path</span><span class="p">);</span>
+        <span class="k">return</span><span class="p">;</span>
+    <span class="p">}</span>
+    <span class="k">if</span> <span class="p">(</span><span class="n">fstat</span><span class="p">(</span><span class="n">fd</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">st</span><span class="p">)</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">)</span>
+    <span class="p">{</span>
+        <span class="n">fprintf</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="s">&#34;find: cannot stat %s</span><span class="se">\n</span><span class="s">&#34;</span><span class="p">,</span> <span class="n">path</span><span class="p">);</span>
+        <span class="n">close</span><span class="p">(</span><span class="n">fd</span><span class="p">);</span>
+        <span class="k">return</span><span class="p">;</span>
+    <span class="p">}</span>
+    <span class="n">strcpy</span><span class="p">(</span><span class="n">buf</span><span class="p">,</span> <span class="n">path</span><span class="p">);</span>
+    <span class="n">p</span> <span class="o">=</span> <span class="n">buf</span> <span class="o">+</span> <span class="n">strlen</span><span class="p">(</span><span class="n">buf</span><span class="p">);</span>
+    <span class="o">*</span><span class="n">p</span><span class="o">++</span> <span class="o">=</span> <span class="sc">&#39;/&#39;</span><span class="p">;</span>
+    <span class="k">while</span> <span class="p">(</span><span class="n">read</span><span class="p">(</span><span class="n">fd</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">de</span><span class="p">,</span> <span class="k">sizeof</span><span class="p">(</span><span class="n">de</span><span class="p">))</span> <span class="o">==</span> <span class="k">sizeof</span><span class="p">(</span><span class="n">de</span><span class="p">))</span>
+    <span class="p">{</span>
+        <span class="k">if</span> <span class="p">(</span><span class="n">de</span><span class="p">.</span><span class="n">inum</span> <span class="o">==</span> <span class="mi">0</span><span class="p">)</span>
+            <span class="k">continue</span><span class="p">;</span>
+        <span class="n">memmove</span><span class="p">(</span><span class="n">p</span><span class="p">,</span> <span class="n">de</span><span class="p">.</span><span class="n">name</span><span class="p">,</span> <span class="n">DIRSIZ</span><span class="p">);</span>
+        <span class="n">p</span><span class="p">[</span><span class="n">DIRSIZ</span><span class="p">]</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+        <span class="k">if</span> <span class="p">(</span><span class="n">strcmp</span><span class="p">(</span><span class="n">de</span><span class="p">.</span><span class="n">name</span><span class="p">,</span> <span class="n">name</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">)</span>
+        <span class="p">{</span>
+            <span class="n">printf</span><span class="p">(</span><span class="s">&#34;%s</span><span class="se">\n</span><span class="s">&#34;</span><span class="p">,</span> <span class="n">buf</span><span class="p">);</span>
+        <span class="p">}</span>
+        <span class="k">if</span> <span class="p">(</span><span class="n">stat</span><span class="p">(</span><span class="n">buf</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">st</span><span class="p">)</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">)</span>
+        <span class="p">{</span>
+            <span class="n">fprintf</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="s">&#34;find: cannot stat %s</span><span class="se">\n</span><span class="s">&#34;</span><span class="p">,</span> <span class="n">buf</span><span class="p">);</span>
+            <span class="k">continue</span><span class="p">;</span>
+        <span class="p">}</span>
+        <span class="k">if</span> <span class="p">(</span><span class="n">st</span><span class="p">.</span><span class="n">type</span> <span class="o">==</span> <span class="n">T_DIR</span> <span class="o">&amp;&amp;</span> <span class="n">strcmp</span><span class="p">(</span><span class="s">&#34;.&#34;</span><span class="p">,</span> <span class="n">de</span><span class="p">.</span><span class="n">name</span><span class="p">)</span> <span class="o">!=</span> <span class="mi">0</span> <span class="o">&amp;&amp;</span> <span class="n">strcmp</span><span class="p">(</span><span class="s">&#34;..&#34;</span><span class="p">,</span> <span class="n">de</span><span class="p">.</span><span class="n">name</span><span class="p">)</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">)</span>
+        <span class="p">{</span>
+            <span class="n">find</span><span class="p">(</span><span class="n">buf</span><span class="p">,</span> <span class="n">name</span><span class="p">);</span>
+        <span class="p">}</span>
+    <span class="p">}</span>
+    <span class="n">close</span><span class="p">(</span><span class="n">fd</span><span class="p">);</span>
+<span class="p">}</span>
+
+<span class="kt">int</span> <span class="nf">main</span><span class="p">(</span><span class="kt">int</span> <span class="n">argc</span><span class="p">,</span> <span class="kt">char</span> <span class="o">*</span><span class="n">argv</span><span class="p">[])</span>
+<span class="p">{</span>
+    <span class="n">find</span><span class="p">(</span><span class="n">argv</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">argv</span><span class="p">[</span><span class="mi">2</span><span class="p">]);</span>
+    <span class="n">exit</span><span class="p">(</span><span class="mi">0</span><span class="p">);</span>
+<span class="p">}</span>
+</code></pre></div><p>这个task内容也算是比较简单的，比较麻烦的部分在于要参考其他程序中对于文件系统的处理方式，稍花一点时间就可以完全搬过来了</p>
+<h3 id="xargs">xargs</h3>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="cp">#include</span> <span class="cpf">&#34;kernel/types.h&#34;</span><span class="cp">
+</span><span class="cp">#include</span> <span class="cpf">&#34;kernel/stat.h&#34;</span><span class="cp">
+</span><span class="cp">#include</span> <span class="cpf">&#34;kernel/param.h&#34;</span><span class="cp">
+</span><span class="cp">#include</span> <span class="cpf">&#34;user/user.h&#34;</span><span class="cp">
+</span><span class="cp">#include</span> <span class="cpf">&#34;kernel/fs.h&#34;</span><span class="cp">
+</span><span class="cp"></span>
+<span class="kt">int</span> <span class="nf">main</span><span class="p">(</span><span class="kt">int</span> <span class="n">argc</span><span class="p">,</span> <span class="kt">char</span> <span class="o">*</span><span class="n">argv</span><span class="p">[])</span>
+<span class="p">{</span>
+    <span class="c1">// 构造参数列表
+</span><span class="c1"></span>    <span class="kt">char</span> <span class="o">**</span><span class="n">args</span> <span class="o">=</span> <span class="p">(</span><span class="kt">char</span> <span class="o">**</span><span class="p">)</span><span class="n">malloc</span><span class="p">(</span><span class="n">MAXARG</span> <span class="o">*</span> <span class="k">sizeof</span><span class="p">(</span><span class="kt">char</span> <span class="o">*</span><span class="p">));</span>
+    <span class="kt">int</span> <span class="n">i</span><span class="p">;</span>
+    <span class="k">for</span> <span class="p">(</span><span class="n">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="n">argc</span> <span class="o">-</span> <span class="mi">1</span><span class="p">;</span> <span class="n">i</span><span class="o">++</span><span class="p">)</span>
+    <span class="p">{</span>
+        <span class="n">args</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">malloc</span><span class="p">(</span><span class="n">strlen</span><span class="p">(</span><span class="n">argv</span><span class="p">[</span><span class="n">i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">])</span> <span class="o">+</span> <span class="mi">1</span><span class="p">);</span>
+        <span class="n">strcpy</span><span class="p">(</span><span class="n">args</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="n">argv</span><span class="p">[</span><span class="n">i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">]);</span>
+    <span class="p">}</span>
+    <span class="kt">int</span> <span class="n">command_i</span> <span class="o">=</span> <span class="n">i</span><span class="p">;</span>
+    <span class="kt">char</span> <span class="n">ch</span><span class="p">;</span>
+    <span class="kt">char</span> <span class="n">buf</span><span class="p">[</span><span class="mi">50</span><span class="p">];</span>
+    <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+    <span class="k">while</span> <span class="p">(</span><span class="n">read</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">ch</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">)</span>
+    <span class="p">{</span>
+        <span class="k">if</span> <span class="p">(</span><span class="n">ch</span> <span class="o">==</span> <span class="sc">&#39;\n&#39;</span><span class="p">)</span>
+        <span class="p">{</span>
+            <span class="n">buf</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+            <span class="n">args</span><span class="p">[</span><span class="n">command_i</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="kt">char</span> <span class="o">*</span><span class="p">)</span><span class="n">malloc</span><span class="p">(</span><span class="n">strlen</span><span class="p">(</span><span class="n">buf</span><span class="p">)</span> <span class="o">+</span> <span class="mi">1</span><span class="p">);</span>
+            <span class="n">strcpy</span><span class="p">(</span><span class="n">args</span><span class="p">[</span><span class="n">command_i</span><span class="p">],</span> <span class="n">buf</span><span class="p">);</span>
+            <span class="n">memset</span><span class="p">(</span><span class="n">buf</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">50</span><span class="p">);</span>
+            <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+            <span class="k">if</span> <span class="p">(</span><span class="n">fork</span><span class="p">()</span> <span class="o">==</span> <span class="mi">0</span><span class="p">)</span>
+            <span class="p">{</span>
+                <span class="n">exec</span><span class="p">(</span><span class="n">args</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">args</span><span class="p">);</span>
+            <span class="p">}</span>
+            <span class="k">else</span>
+            <span class="p">{</span>
+                <span class="n">wait</span><span class="p">(</span><span class="mi">0</span><span class="p">);</span>
+                <span class="kt">int</span> <span class="n">j</span><span class="p">;</span>
+                <span class="k">for</span> <span class="p">(</span><span class="n">j</span> <span class="o">=</span> <span class="mi">1</span><span class="p">;</span> <span class="n">j</span> <span class="o">&lt;=</span> <span class="n">command_i</span><span class="p">;</span> <span class="n">j</span><span class="o">++</span><span class="p">)</span>
+                <span class="p">{</span>
+                    <span class="n">free</span><span class="p">(</span><span class="n">args</span><span class="p">[</span><span class="n">j</span><span class="p">]);</span>
+                <span class="p">}</span>
+                <span class="n">free</span><span class="p">(</span><span class="n">args</span><span class="p">);</span>
+                <span class="c1">// 重新构造参数列表
+</span><span class="c1"></span>                <span class="n">args</span> <span class="o">=</span> <span class="p">(</span><span class="kt">char</span> <span class="o">**</span><span class="p">)</span><span class="n">malloc</span><span class="p">(</span><span class="n">MAXARG</span> <span class="o">*</span> <span class="k">sizeof</span><span class="p">(</span><span class="kt">char</span> <span class="o">*</span><span class="p">));</span>
+                <span class="kt">int</span> <span class="n">i</span><span class="p">;</span>
+                <span class="k">for</span> <span class="p">(</span><span class="n">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="n">argc</span> <span class="o">-</span> <span class="mi">1</span><span class="p">;</span> <span class="n">i</span><span class="o">++</span><span class="p">)</span>
+                <span class="p">{</span>
+                    <span class="n">args</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">malloc</span><span class="p">(</span><span class="n">strlen</span><span class="p">(</span><span class="n">argv</span><span class="p">[</span><span class="n">i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">])</span> <span class="o">+</span> <span class="mi">1</span><span class="p">);</span>
+                    <span class="n">strcpy</span><span class="p">(</span><span class="n">args</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="n">argv</span><span class="p">[</span><span class="n">i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">]);</span>
+                <span class="p">}</span>
+                <span class="n">command_i</span> <span class="o">=</span> <span class="n">i</span><span class="p">;</span>
+            <span class="p">}</span>
+        <span class="p">}</span>
+        <span class="k">else</span> <span class="k">if</span> <span class="p">(</span><span class="n">ch</span> <span class="o">==</span> <span class="sc">&#39; &#39;</span><span class="p">)</span>
+        <span class="p">{</span>
+            <span class="n">buf</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+            <span class="n">args</span><span class="p">[</span><span class="n">command_i</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="kt">char</span> <span class="o">*</span><span class="p">)</span><span class="n">malloc</span><span class="p">(</span><span class="n">strlen</span><span class="p">(</span><span class="n">buf</span><span class="p">)</span> <span class="o">+</span> <span class="mi">1</span><span class="p">);</span>
+            <span class="n">strcpy</span><span class="p">(</span><span class="n">args</span><span class="p">[</span><span class="n">command_i</span><span class="p">],</span> <span class="n">buf</span><span class="p">);</span>
+            <span class="n">memset</span><span class="p">(</span><span class="n">buf</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">50</span><span class="p">);</span>
+            <span class="n">command_i</span><span class="o">++</span><span class="p">;</span>
+            <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+        <span class="p">}</span>
+        <span class="k">else</span>
+        <span class="p">{</span>
+            <span class="n">buf</span><span class="p">[</span><span class="n">i</span><span class="o">++</span><span class="p">]</span> <span class="o">=</span> <span class="n">ch</span><span class="p">;</span>
+        <span class="p">}</span>
+    <span class="p">}</span>
+    <span class="n">exit</span><span class="p">(</span><span class="mi">0</span><span class="p">);</span>
+<span class="p">}</span>
+</code></pre></div><p>由于做这个实验已经过了很久，对这个task的印象不是很深了，我记得我当初是读错了题目要求，所以刚开始怎么都无法解决。后面重新审了题，再加上参考了网上一些大佬的程序，最终还是完成了，总体而言确实是moderate的难度。</p>
+<h2 id="总结">总结</h2>
+<p>对于OS基础薄弱的我来说，这个课程和配套的Lab确实教会了我很多，不光是概念上的知识，也有实际动手的经验。在Lab中，很多晦涩难懂、抽象的东西都变成了实实在在的代码，在将每个步骤拆解、拼装成程序后，自然地就将理论知识和实践融会贯通了。希望学完这门课之后，如果在面试中遇到操作系统原理相关的问题，我能够侃侃而谈，信心十足吧。</p>
+<p>感谢MIT，感谢互联网，让全球的每个学生都能享受顶级的计算机知识教育！</p>
+<p>（未完待续&hellip;）</p>
+
+</section>
+
+
+    <footer class="article-footer">
+    
+    <section class="article-tags">
+        
+            <a href="/tags/%E8%AE%A1%E7%AE%97%E6%9C%BA%E5%9F%BA%E7%A1%80/">计算机基础</a>
+        
+            <a href="/tags/%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F/">操作系统</a>
+        
+            <a href="/tags/lab/">Lab</a>
+        
+    </section>
+
+
+    
+    <section class="article-copyright">
+        <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-copyright" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="12" cy="12" r="9" />
+  <path d="M14.5 9a3.5 4 0 1 0 0 6" />
+</svg>
+
+
+
+        <span>Licensed under CC BY-NC-SA 4.0</span>
+    </section>
+    </footer>
+
+
+    
+</article>
+
+    <aside class="related-contents--wrapper">
+    
+    
+        <h2 class="section-title">相关文章</h2>
+        <div class="related-contents">
+            <div class="flex article-list--tile">
+                
+                    
+<article class="has-image">
+    <a href="/p/cyder-map/">
+        
+        
+            <div class="article-image">
+                <img src="/p/cyder-map/bg.6214918ba33543d8ef620010cdf8c38d_hu3d03a01dcc18bc5be0e67db3d8d209a6_4331049_250x150_fill_q75_box_smart1.jpg" 
+                        width="250" 
+                        height="150" 
+                        loading="lazy" 
+                        data-key="cyder-map" 
+                        data-hash="md5-YhSRi6M1Q9jvYgAQzfjDjQ==">
+                
+            </div>
+        
+
+        <div class="article-details">
+            <h2 class="article-title">CyderMap——HHU仿百度地图课设项目</h2>
+        </div>
+    </a>
+</article>
+                
+                    
+<article class="has-image">
+    <a href="/p/redis-data-structure/">
+        
+        
+            <div class="article-image">
+                <img src="/p/redis-data-structure/bg.d571caae2d9536be4d95aa34144be73b_hu3d03a01dcc18bc5be0e67db3d8d209a6_1082539_250x150_fill_q75_box_smart1.jpg" 
+                        width="250" 
+                        height="150" 
+                        loading="lazy" 
+                        data-key="redis-data-structure" 
+                        data-hash="md5-1XHKri2VNr5Nlao0FEvnOw==">
+                
+            </div>
+        
+
+        <div class="article-details">
+            <h2 class="article-title">Redis底层数据结构</h2>
+        </div>
+    </a>
+</article>
+                
+                    
+<article class="has-image">
+    <a href="/p/abstract-queued-synchronizer/">
+        
+        
+            <div class="article-image">
+                <img src="/p/abstract-queued-synchronizer/bg.7db24b9288bd166f509a31402056347e_hu3d03a01dcc18bc5be0e67db3d8d209a6_888276_250x150_fill_q75_box_smart1.jpg" 
+                        width="250" 
+                        height="150" 
+                        loading="lazy" 
+                        data-key="abstract-queued-synchronizer" 
+                        data-hash="md5-fbJLkoi9Fm9QmjFAIFY0fg==">
+                
+            </div>
+        
+
+        <div class="article-details">
+            <h2 class="article-title">AbstractQueuedSynchronizer源码探究</h2>
+        </div>
+    </a>
+</article>
+                
+                    
+<article class="has-image">
+    <a href="/p/cache-problem/">
+        
+        
+            <div class="article-image">
+                <img src="/p/cache-problem/bg.322744e286b38ffaf2fea56687a98256_hu4ffaf0220a7db3667523ce786184afe1_220850_250x150_fill_q75_box_smart1.jpeg" 
+                        width="250" 
+                        height="150" 
+                        loading="lazy" 
+                        data-key="cache-problem" 
+                        data-hash="md5-MidE4oazj/ry/qVmh6mCVg==">
+                
+            </div>
+        
+
+        <div class="article-details">
+            <h2 class="article-title">谈谈缓存穿透、击穿和雪崩</h2>
+        </div>
+    </a>
+</article>
+                
+                    
+<article class="has-image">
+    <a href="/p/bloom-filter/">
+        
+        
+            <div class="article-image">
+                <img src="/p/bloom-filter/bg.857b060e24f78ec32a433630366e7202_hu1cee95830531cbd4ff92afca563f6bce_71782_250x150_fill_q75_box_smart1.jpeg" 
+                        width="250" 
+                        height="150" 
+                        loading="lazy" 
+                        data-key="bloom-filter" 
+                        data-hash="md5-hXsGDiT3jsMqQzYwNm5yAg==">
+                
+            </div>
+        
+
+        <div class="article-details">
+            <h2 class="article-title">布隆过滤器的简单总结</h2>
+        </div>
+    </a>
+</article>
+                
+            </div>
+        </div>
+    
+</aside>
+
+     
+    
+        
+    <script src="https://utteranc.es/client.js" 
+        repo="davyxx3/blog_comment"
+        issue-term="pathname"
+        
+        crossorigin="anonymous"
+        async
+        >
+</script>
+
+<style>
+    .utterances {
+        max-width: unset;
+    }
+</style>
+
+<script>
+    function setUtterancesTheme(theme) {
+        let utterances = document.querySelector('.utterances iframe');
+        if (utterances) {
+            utterances.contentWindow.postMessage(
+                {
+                    type: 'set-theme',
+                    theme: `github-${theme}`
+                },
+                'https://utteranc.es'
+            );
+        }
+    }
+
+    addEventListener('message', event => {
+        if (event.origin !== 'https://utteranc.es') return;
+        setUtterancesTheme(document.documentElement.dataset.scheme)
+    });
+
+    window.addEventListener('onColorSchemeChange', (e) => {
+        setUtterancesTheme(e.detail)
+    })
+</script>
+
+
+    
+
+    <footer class="site-footer">
+    <section class="copyright">
+        &copy; 
+        
+            2020 - 
+        
+        2022 CyderX
+    </section>
+    
+    <section class="powerby">
+        Built with <a href="https://gohugo.io/" target="_blank" rel="noopener">Hugo</a> <br />
+        Theme <b><a href="https://github.com/CaiJimmy/hugo-theme-stack" target="_blank" rel="noopener" data-version="3.5.0">Stack</a></b> designed by <a href="https://jimmycai.com" target="_blank" rel="noopener">Jimmy</a>
+    </section>
+</footer>
+
+
+    
+<div class="pswp" tabindex="-1" role="dialog" aria-hidden="true">
+
+    
+    <div class="pswp__bg"></div>
+
+    
+    <div class="pswp__scroll-wrap">
+
+        
+        <div class="pswp__container">
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+        </div>
+
+        
+        <div class="pswp__ui pswp__ui--hidden">
+
+            <div class="pswp__top-bar">
+
+                
+
+                <div class="pswp__counter"></div>
+
+                <button class="pswp__button pswp__button--close" title="Close (Esc)"></button>
+
+                <button class="pswp__button pswp__button--share" title="Share"></button>
+
+                <button class="pswp__button pswp__button--fs" title="Toggle fullscreen"></button>
+
+                <button class="pswp__button pswp__button--zoom" title="Zoom in/out"></button>
+
+                
+                
+                <div class="pswp__preloader">
+                    <div class="pswp__preloader__icn">
+                        <div class="pswp__preloader__cut">
+                            <div class="pswp__preloader__donut"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="pswp__share-modal pswp__share-modal--hidden pswp__single-tap">
+                <div class="pswp__share-tooltip"></div>
+            </div>
+
+            <button class="pswp__button pswp__button--arrow--left" title="Previous (arrow left)">
+            </button>
+
+            <button class="pswp__button pswp__button--arrow--right" title="Next (arrow right)">
+            </button>
+
+            <div class="pswp__caption">
+                <div class="pswp__caption__center"></div>
+            </div>
+
+        </div>
+
+    </div>
+
+</div><script 
+                src="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe.min.js"integrity="sha256-ePwmChbbvXbsO02lbM3HoHbSHTHFAeChekF1xKJdleo="crossorigin="anonymous"
+                defer="true"
+                >
+            </script><script 
+                src="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe-ui-default.min.js"integrity="sha256-UKkzOn/w1mBxRmLLGrSeyB4e1xbrp4xylgAWb3M42pU="crossorigin="anonymous"
+                defer="true"
+                >
+            </script><link 
+                rel="stylesheet" 
+                href="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/default-skin/default-skin.css"integrity="sha256-c0uckgykQ9v5k&#43;IqViZOZKc47Jn7KQil4/MP3ySA3F8="crossorigin="anonymous"
+            ><link 
+                rel="stylesheet" 
+                href="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe.css"integrity="sha256-SBLU4vv6CA6lHsZ1XyTdhyjJxCjPif/TRkjnsyGAGnE="crossorigin="anonymous"
+            >
+
+            </main>
+    
+        <aside class="sidebar right-sidebar sticky">
+            <section class="widget archives">
+                <div class="widget-icon">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-hash" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <line x1="5" y1="9" x2="19" y2="9" />
+  <line x1="5" y1="15" x2="19" y2="15" />
+  <line x1="11" y1="4" x2="7" y2="20" />
+  <line x1="17" y1="4" x2="13" y2="20" />
+</svg>
+
+
+
+                </div>
+                <h2 class="widget-title section-title">目录</h2>
+                
+                <div class="widget--toc">
+                    <nav id="TableOfContents">
+  <ol>
+    <li><a href="#简介">简介</a></li>
+    <li><a href="#环境配置">环境配置</a></li>
+    <li><a href="#代码详解">代码详解</a>
+      <ol>
+        <li><a href="#sleep">sleep</a></li>
+        <li><a href="#pingpong">pingpong</a></li>
+        <li><a href="#primes">primes</a></li>
+        <li><a href="#find">find</a></li>
+        <li><a href="#xargs">xargs</a></li>
+      </ol>
+    </li>
+    <li><a href="#总结">总结</a></li>
+  </ol>
+</nav>
+                </div>
+            </section>
+        </aside>
+    
+
+        </div>
+        <script 
+                src="https://cdn.jsdelivr.net/npm/node-vibrant@3.1.5/dist/vibrant.min.js"integrity="sha256-5NovOZc4iwiAWTYIFiIM7DxKUXKWvpVEuMEPLzcm5/g="crossorigin="anonymous"
+                defer="false"
+                >
+            </script><script type="text/javascript" src="/ts/main.js" defer></script>
+<script>
+    (function () {
+        const customFont = document.createElement('link');
+        customFont.href = "https://fonts.googleapis.com/css2?family=Lato:wght@300;400;700&display=swap";
+
+        customFont.type = "text/css";
+        customFont.rel = "stylesheet";
+
+        document.head.appendChild(customFont);
+    }());
+</script>
+
+    </body>
+</html>
